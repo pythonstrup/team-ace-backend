@@ -1,0 +1,43 @@
+# promptfoo configuration
+description: "gamchi chatbot"
+
+prompts:
+  - file://system_prompt.txt
+  - file://user_prompt_v1.txt
+  - file://user_prompt_v2.txt
+
+providers:
+  - "google:gemini-2.5-flash"
+
+tests:
+  - vars:
+      context: "회사 동료와의 대화"
+      text: "오늘 회의에서 제 아이디어가 무시당한 것 같아요. 다들 제 말은 듣지도 않고 바로 다른 주제로 넘어가더라고요. 괜찮다고 생각하려 하는데 계속 신경이 쓰이네요."
+    
+  - vars:
+      context: "친구와의 메시지"
+      text: "축하해!! 정말 잘됐다 ㅎㅎ 나도 기쁘네~ (사실 좀 부럽기도 하고... 나는 언제쯤 될까 싶기도 하고)"
+    
+  - vars:
+      context: "고객 서비스 채팅"
+      text: "네, 알겠습니다. 이해했습니다. 감사합니다."
+    
+  - vars:
+      context: "일기 내용"
+      text: "오늘도 똑같은 하루였다. 아침에 일어나서 회사 가고, 일하고, 집에 왔다. 뭔가 해야 할 것 같은데 뭘 해야 할지 모르겠고, 그냥 시간만 흘러가는 것 같다."
+    
+  - vars:
+      context: "가족과의 대화"
+      text: "엄마 걱정 안 해도 돼. 나 잘 지내고 있어. 밥도 잘 먹고 있고, 일도 순조롭게 진행되고 있어. 정말이야, 걱정하지 마."
+
+# 평가 기준
+defaultTest:
+  assert:
+    - type: contains
+      value: "감정"
+    - type: contains  
+      value: "강도"
+    - type: not-contains
+      value: "진단"
+    - type: not-contains
+      value: "치료"

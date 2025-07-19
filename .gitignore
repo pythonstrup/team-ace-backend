@@ -40,4 +40,4 @@ out/
 application-local.yml
 
 ## Environment ##
-.env
+prompts/.env
