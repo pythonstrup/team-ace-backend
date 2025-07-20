@@ -13,6 +13,9 @@ public class CustomException extends RuntimeException {
     public static final CustomException USER_ALREADY_EXISTS =
             new CustomException(ErrorType.USER_ALREADY_EXISTS);
 
+    public static final CustomException PROMPT_TEMPLATE_NOT_FOUND =
+            new CustomException(ErrorType.PROMPT_TEMPLATE_NOT_FOUND);
+
     @Getter private final ErrorType errorType;
     @Getter private final Object data;
 

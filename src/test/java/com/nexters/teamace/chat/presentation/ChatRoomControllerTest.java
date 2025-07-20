@@ -1,5 +1,6 @@
 package com.nexters.teamace.chat.presentation;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.epages.restdocs.apispec.Schema.schema;
 import static org.hamcrest.Matchers.equalTo;
@@ -17,6 +18,8 @@ import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.nexters.teamace.chat.application.ChatRoomCommand;
 import com.nexters.teamace.chat.application.ChatRoomResult;
+import com.nexters.teamace.chat.application.SendMessageCommand;
+import com.nexters.teamace.chat.application.SendMessageResult;
 import com.nexters.teamace.common.annotation.WithMockCustomUser;
 import com.nexters.teamace.common.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -211,5 +214,116 @@ class ChatRoomControllerTest extends ControllerTest {
                                                 .requestSchema(schema("ChatRoomRequest"))
                                                 .responseSchema(schema("ErrorResponse"))
                                                 .build())));
+    }
+
+    @Test
+    @DisplayName("채팅 메시지를 전송할 수 있다")
+    @WithMockCustomUser
+    void sendMessage() throws Exception {
+        // given
+        final Long chatRoomId = 1L;
+        final ChatMessageRequest request = new ChatMessageRequest("Hello AI!");
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        final SendMessageResult result = new SendMessageResult("Hello! How can I help you today?");
+        given(chatRoomService.sendMessage(any(SendMessageCommand.class))).willReturn(result);
+
+        // when
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        post("/api/v1/chat-rooms/{chatRoomId}/messages", chatRoomId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody));
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.message").value("Hello! How can I help you today?"))
+                .andExpect(jsonPath("$.error").doesNotExist())
+                .andDo(
+                        MockMvcRestDocumentationWrapper.document(
+                                "{class_name}/{method_name}",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                resource(
+                                        ResourceSnippetParameters.builder()
+                                                .tag("Chat")
+                                                .description("채팅 메시지 전송")
+                                                .pathParameters(
+                                                        parameterWithName("chatRoomId")
+                                                                .description("채팅방 ID"))
+                                                .requestFields(
+                                                        fieldWithPath("message")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("전송할 메시지"))
+                                                .responseFields(
+                                                        fieldWithPath("success")
+                                                                .type(JsonFieldType.BOOLEAN)
+                                                                .description("성공 여부"),
+                                                        fieldWithPath("data")
+                                                                .type(JsonFieldType.OBJECT)
+                                                                .description("응답 데이터"),
+                                                        fieldWithPath("data.message")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("AI 응답 메시지"),
+                                                        fieldWithPath("error")
+                                                                .type(JsonFieldType.NULL)
+                                                                .description("에러 정보 (성공 시 null)"))
+                                                .requestSchema(schema("ChatMessageRequest"))
+                                                .responseSchema(schema("ChatMessageResponse"))
+                                                .build())));
+    }
+
+    @Test
+    @DisplayName("메시지가 비어있으면 전송에 실패한다")
+    @WithMockCustomUser
+    void sendMessage_messageBlank_fail() throws Exception {
+        // given
+        final Long chatRoomId = 1L;
+        final ChatMessageRequest request = new ChatMessageRequest("");
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        post("/api/v1/chat-rooms/{chatRoomId}/messages", chatRoomId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody));
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.error").exists())
+                .andExpect(jsonPath("$.error.code").value("E400"))
+                .andExpect(jsonPath("$.error.data[0].field").value("message"))
+                .andExpect(jsonPath("$.error.data[0].message").value("message must not be blank"));
+    }
+
+    @Test
+    @DisplayName("인증 없이 메시지 전송 요청 시 401 Unauthorized를 반환한다")
+    void sendMessage_withoutAuth_unauthorized() throws Exception {
+        // given
+        final Long chatRoomId = 1L;
+        final ChatMessageRequest request = new ChatMessageRequest("Hello AI!");
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        post("/api/v1/chat-rooms/{chatRoomId}/messages", chatRoomId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody));
+
+        // then
+        resultActions
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.error").exists())
+                .andExpect(jsonPath("$.error.code").value("E40100"))
+                .andExpect(jsonPath("$.error.message").value("Invalid or expired token"));
     }
 }

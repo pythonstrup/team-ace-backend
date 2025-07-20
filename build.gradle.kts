@@ -37,7 +37,14 @@ repositories {
     mavenCentral()
 }
 
+extra["springAiVersion"] = "1.0.0"
 extra["snippetsDir"] = file("build/generated-snippets")
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+    }
+}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -66,6 +73,12 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
+    // spring ai
+    implementation("org.springframework.ai:spring-ai-starter-model-openai")
+
+    // google gen ai
+    implementation("com.google.genai:google-genai:1.10.0")
 
     // spring actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
