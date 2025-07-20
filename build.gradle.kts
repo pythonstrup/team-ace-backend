@@ -29,7 +29,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
-        googleJavaFormat()
+        googleJavaFormat().aosp()
     }
 }
 
