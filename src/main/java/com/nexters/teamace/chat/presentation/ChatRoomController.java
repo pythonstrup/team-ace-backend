@@ -1,0 +1,29 @@
+package com.nexters.teamace.chat.presentation;
+
+import com.nexters.teamace.chat.application.ChatRoomCommand;
+import com.nexters.teamace.chat.application.ChatRoomResult;
+import com.nexters.teamace.chat.application.ChatRoomService;
+import com.nexters.teamace.common.presentation.ApiResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/chat-rooms")
+public class ChatRoomController {
+
+    private final ChatRoomService chatRoomService;
+
+    @PostMapping
+    public ApiResponse<ChatRoomResponse> createChatRoom(
+            @RequestBody @Valid final ChatRoomRequest request) {
+        final ChatRoomCommand command = new ChatRoomCommand(request.userId());
+        final ChatRoomResult chatRoom = chatRoomService.createChat(command);
+        return ApiResponse.success(
+                new ChatRoomResponse(chatRoom.chatRoomId(), chatRoom.firstChat()));
+    }
+}
