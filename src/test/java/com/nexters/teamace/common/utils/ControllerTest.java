@@ -12,11 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 public abstract class ControllerTest {
 
-  @Autowired protected MockMvc mockMvc;
-  @Autowired protected ObjectMapper objectMapper;
+    @Autowired protected MockMvc mockMvc;
+    @Autowired protected ObjectMapper objectMapper;
 
-  protected Object asParsedJson(Object obj) throws JsonProcessingException {
-    String json = objectMapper.writeValueAsString(obj);
-    return JsonPath.read(json, "$");
-  }
+    protected Object asParsedJson(Object obj) throws JsonProcessingException {
+        String json = objectMapper.writeValueAsString(obj);
+        return JsonPath.read(json, "$");
+    }
 }

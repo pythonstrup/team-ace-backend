@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/chats")
 public class ChatController {
 
-  @PostMapping
-  public ApiResponse<ChatResponse> createChat(@RequestBody @Valid final ChatRequest request) {
-    return ApiResponse.success(new ChatResponse(1L));
-  }
+    @PostMapping
+    public ApiResponse<ChatResponse> createChat(@RequestBody @Valid final ChatRequest request) {
+        return ApiResponse.success(new ChatResponse(1L));
+    }
 }
