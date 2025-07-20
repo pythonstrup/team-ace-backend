@@ -1,0 +1,21 @@
+package com.nexters.teamace.common.exception;
+
+import lombok.Getter;
+
+public class CustomException extends RuntimeException {
+
+    @Getter private final ErrorType errorType;
+    @Getter private final Object data;
+
+    private CustomException(final ErrorType errorType) {
+        super(errorType.getMessage());
+        this.errorType = errorType;
+        this.data = null;
+    }
+
+    public CustomException(final ErrorType errorType, final Object data) {
+        super(errorType.getMessage());
+        this.errorType = errorType;
+        this.data = data;
+    }
+}
