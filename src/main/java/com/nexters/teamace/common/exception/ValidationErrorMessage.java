@@ -6,6 +6,7 @@ public class ValidationErrorMessage {
     public static final String USERNAME_NOT_BLANK = "username must not be blank";
 
     public static final String NICKNAME_NOT_BLANK = "nickname must not be blank";
+    public static final String MESSAGE_NOT_BLANK = "message must not be blank";
 
     public static final String REFRESH_TOKEN_NOT_BLANK = "refresh token must not be blank";
 

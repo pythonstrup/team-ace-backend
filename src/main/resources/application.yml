@@ -28,7 +28,18 @@ decorator:
       logging: slf4j
       log-format: "%(executionTime)ms | %(category) | %(sql)"
 
+  ai:
+    model:
+      chat: none # 기본 모델 설정 비활성화
+    openai:
+      api-key: ${OPENAI_API_KEY:fake-key} # 기본 모델을 비활성화해도 필수값으로 받음.
+
+
 jwt:
   secret: ${JWT_SECRET:dGVhbS1hY2UtYmFja2VuZC1kZWZhdWx0LXNlY3JldC1rZXktZm9yLWRldmVsb3BtZW50LW9ubHk=}
   access-token-validity: ${JWT_ACCESS_TOKEN_VALIDITY:3600000}
   refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:604800000}
+
+gemini:
+  api-key: ${GEMINI_API_KEY:test-api-key}
+  model: gemini-2.0-flash-exp

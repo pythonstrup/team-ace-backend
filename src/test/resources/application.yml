@@ -10,11 +10,17 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
+  ai:
+    model:
+      chat: none
+    openai:
+      api-key: fake-key
+
 jwt:
   secret: dGVhbS1hY2UtYmFja2VuZC1kZWZhdWx0LXNlY3JldC1rZXktZm9yLWRldmVsb3BtZW50LW9ubHk=
   access-token-validity: 3600000
   refresh-token-validity: 604800000
 
-logging:
-  level:
-    com.nexters.teamace.auth: DEBUG
+gemini:
+  api-key: test-api-key
+  model: gemini-2.0-flash-exp
