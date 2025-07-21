@@ -51,6 +51,15 @@ dependencies {
     // spring validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    // spring security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
+
+    // jwt
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
     // restdocs-api-spec
     testImplementation("com.epages:restdocs-api-spec-mockmvc:0.19.4")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
