@@ -1,1 +1,8 @@
-spring.application.name=team-ace-backend
+spring:
+  application:
+    name: team-ace-backend
+
+jwt:
+  secret: ${JWT_SECRET:dGVhbS1hY2UtYmFja2VuZC1kZWZhdWx0LXNlY3JldC1rZXktZm9yLWRldmVsb3BtZW50LW9ubHk=}
+  access-token-validity: ${JWT_ACCESS_TOKEN_VALIDITY:3600000}
+  refresh-token-validity: ${JWT_REFRESH_TOKEN_VALIDITY:604800000}
