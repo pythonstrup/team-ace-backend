@@ -11,6 +11,13 @@ public enum ErrorType {
     BINDING_ERROR(HttpStatus.BAD_REQUEST, ErrorCode.E400, "Validation failed"),
     CONSTRAINT_VIOLATION(HttpStatus.BAD_REQUEST, ErrorCode.E400, "Validation failed"),
 
+    /** 401 UNAUTHORIZED */
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, ErrorCode.E401, "Authentication required"),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, ErrorCode.E401, "Invalid or expired token"),
+
+    /** 403 FORBIDDEN */
+    FORBIDDEN(HttpStatus.FORBIDDEN, ErrorCode.E403, "Access denied"),
+
     /** 404 NOT_FOUND */
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Resource not found"),
 

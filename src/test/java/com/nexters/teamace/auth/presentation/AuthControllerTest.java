@@ -1,4 +1,4 @@
-package com.nexters.teamace.chat.presentation;
+package com.nexters.teamace.auth.presentation;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.epages.restdocs.apispec.Schema.schema;
@@ -15,9 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.nexters.teamace.chat.application.ChatRoomCommand;
-import com.nexters.teamace.chat.application.ChatRoomResult;
-import com.nexters.teamace.common.annotation.WithMockCustomUser;
+import com.nexters.teamace.auth.application.LoginCommand;
+import com.nexters.teamace.auth.application.LoginResult;
 import com.nexters.teamace.common.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,33 +24,34 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
-class ChatRoomControllerTest extends ControllerTest {
+class AuthControllerTest extends ControllerTest {
 
     @Test
-    @DisplayName("채팅을 생성할 수 있다")
-    @WithMockCustomUser
-    void createChatRoom() throws Exception {
+    @DisplayName("로그인을 할 수 있다")
+    void login() throws Exception {
         // given
-        final ChatRoomRequest request = new ChatRoomRequest("user123");
+        final LoginRequest request = new LoginRequest("test-user");
         final String requestBody = objectMapper.writeValueAsString(request);
 
-        final ChatRoomResult chatRoom = new ChatRoomResult(1L, "첫번째 채팅");
-        given(chatRoomService.createChat(any(ChatRoomCommand.class))).willReturn(chatRoom);
-
-        final ChatRoomResponse response = new ChatRoomResponse(1L, "첫번째 채팅");
+        final LoginResult loginResult =
+                new LoginResult("test-user", "access-token", "refresh-token");
+        given(authService.login(any(LoginCommand.class))).willReturn(loginResult);
 
         // when
         final ResultActions resultActions =
                 mockMvc.perform(
-                        post("/api/v1/chat-rooms")
+                        post("/api/v1/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody));
+
+        final LoginResponse expectedResponse =
+                new LoginResponse("test-user", "access-token", "refresh-token");
 
         // then
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data", equalTo(asParsedJson(response))))
+                .andExpect(jsonPath("$.data", equalTo(asParsedJson(expectedResponse))))
                 .andExpect(jsonPath("$.error").doesNotExist())
                 .andDo(
                         MockMvcRestDocumentationWrapper.document(
@@ -60,8 +60,8 @@ class ChatRoomControllerTest extends ControllerTest {
                                 preprocessResponse(prettyPrint()),
                                 resource(
                                         ResourceSnippetParameters.builder()
-                                                .tag("Chat")
-                                                .description("채팅룸 생성")
+                                                .tag("Auth")
+                                                .description("로그인")
                                                 .requestFields(
                                                         fieldWithPath("userId")
                                                                 .type(JsonFieldType.STRING)
@@ -73,32 +73,34 @@ class ChatRoomControllerTest extends ControllerTest {
                                                         fieldWithPath("data")
                                                                 .type(JsonFieldType.OBJECT)
                                                                 .description("응답 데이터"),
-                                                        fieldWithPath("data.chatRoomId")
-                                                                .type(JsonFieldType.NUMBER)
-                                                                .description("생성된 채팅방 ID"),
-                                                        fieldWithPath("data.chat")
+                                                        fieldWithPath("data.userId")
                                                                 .type(JsonFieldType.STRING)
-                                                                .description("첫번째 채팅"),
+                                                                .description("사용자 ID"),
+                                                        fieldWithPath("data.accessToken")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("액세스 토큰"),
+                                                        fieldWithPath("data.refreshToken")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("리프레시 토큰"),
                                                         fieldWithPath("error")
                                                                 .type(JsonFieldType.NULL)
                                                                 .description("에러 정보 (성공 시 null)"))
-                                                .requestSchema(schema("ChatRoomRequest"))
-                                                .responseSchema(schema("ChatRoomResponse"))
+                                                .requestSchema(schema("LoginRequest"))
+                                                .responseSchema(schema("LoginResponse"))
                                                 .build())));
     }
 
     @Test
-    @DisplayName("userId가 비어있으면 채팅 생성에 실패한다")
-    @WithMockCustomUser
-    void createChatRoom_userIdBlank_fail() throws Exception {
+    @DisplayName("userId가 비어있으면 로그인에 실패한다")
+    void login_userIdBlank_fail() throws Exception {
         // given
-        final ChatRoomRequest request = new ChatRoomRequest("");
+        final LoginRequest request = new LoginRequest("");
         final String requestBody = objectMapper.writeValueAsString(request);
 
         // when
         final ResultActions resultActions =
                 mockMvc.perform(
-                        post("/api/v1/chat-rooms")
+                        post("/api/v1/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody));
 
@@ -118,8 +120,8 @@ class ChatRoomControllerTest extends ControllerTest {
                                 preprocessResponse(prettyPrint()),
                                 resource(
                                         ResourceSnippetParameters.builder()
-                                                .tag("Chat")
-                                                .description("채팅룸 생성 - userId 검증 실패")
+                                                .tag("Auth")
+                                                .description("로그인 - userId 검증 실패")
                                                 .requestFields(
                                                         fieldWithPath("userId")
                                                                 .type(JsonFieldType.STRING)
@@ -149,7 +151,7 @@ class ChatRoomControllerTest extends ControllerTest {
                                                         fieldWithPath("error.data[].message")
                                                                 .type(JsonFieldType.STRING)
                                                                 .description("검증 실패 메시지"))
-                                                .requestSchema(schema("ChatRoomRequest"))
+                                                .requestSchema(schema("LoginRequest"))
                                                 .responseSchema(schema("ErrorResponse"))
                                                 .build())));
     }
