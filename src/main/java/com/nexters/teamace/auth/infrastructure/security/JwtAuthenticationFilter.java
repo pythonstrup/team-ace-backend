@@ -1,5 +1,7 @@
 package com.nexters.teamace.auth.infrastructure.security;
 
+import static com.nexters.teamace.common.exception.CustomException.INVALID_TOKEN;
+
 import com.nexters.teamace.auth.application.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,33 +30,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final FilterChain filterChain)
             throws ServletException, IOException {
 
-        Optional<String> maybeToken = resolveToken(request);
-
-        if (maybeToken.isPresent()
-                && StringUtils.hasText(maybeToken.get())
-                && tokenService.validateToken(maybeToken.get())) {
-            String userId = tokenService.getUserIdFromToken(maybeToken.get());
-            log.debug("Valid JWT token for user: {}", userId);
-            setAuthentication(userId);
-        }
+        extractValidToken(request)
+                .map(tokenService::getUserIdFromToken)
+                .ifPresent(this::setAuthentication);
 
         filterChain.doFilter(request, response);
     }
 
-    private Optional<String> resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return Optional.of(bearerToken.substring(BEARER_PREFIX.length()));
-        }
-        return Optional.empty();
+    private Optional<String> extractValidToken(final HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(AUTHORIZATION_HEADER))
+                .filter(header -> header.startsWith(BEARER_PREFIX))
+                .map(header -> header.substring(BEARER_PREFIX.length()))
+                .filter(StringUtils::hasText)
+                .filter(tokenService::validateToken)
+                .or(
+                        () -> {
+                            request.setAttribute("exception", INVALID_TOKEN);
+                            return Optional.empty();
+                        });
     }
 
-    private void setAuthentication(String userId) {
+    private void setAuthentication(final String userId) {
         final String credentials = "";
-        UsernamePasswordAuthenticationToken authentication =
+        final var authentication =
                 new UsernamePasswordAuthenticationToken(
                         userId, credentials, List.of(new SimpleGrantedAuthority("ROLE_USER")));
         SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -4,6 +4,9 @@ import lombok.Getter;
 
 public class CustomException extends RuntimeException {
 
+    public static final CustomException INVALID_TOKEN =
+            new CustomException(ErrorType.INVALID_TOKEN);
+
     @Getter private final ErrorType errorType;
     @Getter private final Object data;
 

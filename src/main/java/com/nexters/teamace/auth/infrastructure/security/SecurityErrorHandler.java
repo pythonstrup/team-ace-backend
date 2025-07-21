@@ -23,9 +23,9 @@ public class SecurityErrorHandler implements AuthenticationEntryPoint, AccessDen
 
     @Override
     public void commence(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException authException)
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final AuthenticationException authException)
             throws IOException, ServletException {
         CustomException exception = (CustomException) request.getAttribute("exception");
         if (exception != null) {
@@ -37,9 +37,9 @@ public class SecurityErrorHandler implements AuthenticationEntryPoint, AccessDen
 
     @Override
     public void handle(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AccessDeniedException accessDeniedException)
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final AccessDeniedException accessDeniedException)
             throws IOException, ServletException {
         CustomException exception = (CustomException) request.getAttribute("exception");
         if (exception != null) {
