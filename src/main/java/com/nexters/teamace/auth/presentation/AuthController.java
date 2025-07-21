@@ -20,7 +20,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(
-            @Valid @RequestBody LoginRequest request) {
+            @Valid @RequestBody final LoginRequest request) {
         final LoginCommand command = new LoginCommand(request.userId());
         final LoginResult result = authService.login(command);
         final LoginResponse response =

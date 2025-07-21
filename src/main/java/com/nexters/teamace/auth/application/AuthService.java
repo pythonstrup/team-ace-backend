@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final TokenService tokenService;
 
-    public LoginResult login(LoginCommand command) {
-        String userId = command.userId();
+    public LoginResult login(final LoginCommand command) {
+        final String userId = command.userId();
         log.info("Login attempt for userId: {}", userId);
 
-        String accessToken = tokenService.createAccessToken(userId);
-        String refreshToken = tokenService.createRefreshToken(userId);
+        final String accessToken = tokenService.createAccessToken(userId);
+        final String refreshToken = tokenService.createRefreshToken(userId);
 
         log.info("Login successful for userId: {}", userId);
         return new LoginResult(userId, accessToken, refreshToken);
