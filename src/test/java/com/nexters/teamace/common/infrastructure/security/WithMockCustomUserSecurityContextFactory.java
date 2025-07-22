@@ -16,8 +16,7 @@ public class WithMockCustomUserSecurityContextFactory
     public SecurityContext createSecurityContext(WithMockCustomUser annotation) {
         final SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        final var principal =
-                new CustomUserDetails(annotation.username(), annotation.userId());
+        final var principal = new CustomUserDetails(annotation.username(), annotation.userId());
         final Object credentials = null;
         final List<GrantedAuthority> authorities = Collections.emptyList();
 
