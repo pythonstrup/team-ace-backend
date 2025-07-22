@@ -1,5 +1,6 @@
 package com.nexters.teamace.auth.application;
 
+import com.nexters.teamace.common.exception.CustomException;
 import com.nexters.teamace.user.application.CreateUserCommand;
 import com.nexters.teamace.user.application.CreateUserResult;
 import com.nexters.teamace.user.application.GetUserResult;
@@ -34,5 +35,17 @@ public class AuthService {
         final String refreshToken = tokenService.createRefreshToken(authenticatedUser);
 
         return new SignupResult(user.username(), accessToken, refreshToken);
+    }
+
+    public RefreshTokenResult refreshToken(final RefreshTokenCommand command) {
+        if (!tokenService.validateToken(command.refreshToken())) {
+            throw CustomException.INVALID_TOKEN;
+        }
+
+        final AuthenticatedUser user =
+                tokenService.getAuthenticatedUserFromToken(command.refreshToken());
+        final String newAccessToken = tokenService.createAccessToken(user);
+
+        return new RefreshTokenResult(newAccessToken);
     }
 }

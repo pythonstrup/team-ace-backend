@@ -3,6 +3,8 @@ package com.nexters.teamace.auth.presentation;
 import com.nexters.teamace.auth.application.AuthService;
 import com.nexters.teamace.auth.application.LoginCommand;
 import com.nexters.teamace.auth.application.LoginResult;
+import com.nexters.teamace.auth.application.RefreshTokenCommand;
+import com.nexters.teamace.auth.application.RefreshTokenResult;
 import com.nexters.teamace.auth.application.SignupCommand;
 import com.nexters.teamace.auth.application.SignupResult;
 import com.nexters.teamace.common.presentation.ApiResponse;
@@ -37,6 +39,15 @@ public class AuthController {
         final SignupResult result = authService.signup(command);
         final SignupResponse response =
                 new SignupResponse(result.accessToken(), result.refreshToken(), result.username());
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/token/refresh")
+    public ResponseEntity<ApiResponse<RefreshTokenResponse>> refresh(
+            @Valid @RequestBody final RefreshTokenRequest request) {
+        final RefreshTokenCommand command = new RefreshTokenCommand(request.refreshToken());
+        final RefreshTokenResult result = authService.refreshToken(command);
+        final RefreshTokenResponse response = new RefreshTokenResponse(result.accessToken());
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

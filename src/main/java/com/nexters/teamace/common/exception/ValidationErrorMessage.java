@@ -7,6 +7,8 @@ public class ValidationErrorMessage {
 
     public static final String NICKNAME_NOT_BLANK = "nickname must not be blank";
 
+    public static final String REFRESH_TOKEN_NOT_BLANK = "refresh token must not be blank";
+
     /** Size */
     public static final String USERNAME_SIZE = "Username must be between 3 and 20 characters";
 
