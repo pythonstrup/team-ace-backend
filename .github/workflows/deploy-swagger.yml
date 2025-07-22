@@ -48,7 +48,7 @@ jobs:
       - name: Check if Swagger UI is running
         id: check-swagger
         run: |
-          if curl -f -s -o /dev/null "http://${{ secrets.SERVER_HOST }}:8081/swagger/"; then
+          if curl -f -s -o /dev/null --connect-timeout 5 --max-time 10 "http://${{ secrets.SERVER_HOST }}:8081/swagger/"; then
             echo "swagger_running=true" >> $GITHUB_OUTPUT
             echo "✅ Swagger UI is already running"
           else
