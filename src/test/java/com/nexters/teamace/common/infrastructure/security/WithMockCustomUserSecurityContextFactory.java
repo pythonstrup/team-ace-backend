@@ -14,13 +14,14 @@ public class WithMockCustomUserSecurityContextFactory
         implements WithSecurityContextFactory<WithMockCustomUser> {
     @Override
     public SecurityContext createSecurityContext(WithMockCustomUser annotation) {
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        final SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        CustomUserDetails principal = new CustomUserDetails(annotation.username());
-        Object credentials = null;
-        List<GrantedAuthority> authorities = Collections.emptyList();
+        final var principal =
+                new CustomUserDetails(annotation.username(), annotation.userId());
+        final Object credentials = null;
+        final List<GrantedAuthority> authorities = Collections.emptyList();
 
-        TestingAuthenticationToken authentication =
+        final var authentication =
                 new TestingAuthenticationToken(principal, credentials, authorities);
         context.setAuthentication(authentication);
 
