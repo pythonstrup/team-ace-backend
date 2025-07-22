@@ -1,3 +1,3 @@
 package com.nexters.teamace.chat.application;
 
-public record ChatRoomCommand(String userId) {}
+public record ChatRoomCommand(String username) {}

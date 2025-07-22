@@ -1,3 +1,3 @@
 package com.nexters.teamace.auth.application;
 
-public record LoginCommand(String userId) {}
+public record LoginCommand(String username) {}

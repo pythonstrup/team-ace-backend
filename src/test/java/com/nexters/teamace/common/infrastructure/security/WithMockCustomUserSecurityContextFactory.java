@@ -16,7 +16,7 @@ public class WithMockCustomUserSecurityContextFactory
     public SecurityContext createSecurityContext(WithMockCustomUser annotation) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        CustomUserDetails principal = new CustomUserDetails(annotation.userId());
+        CustomUserDetails principal = new CustomUserDetails(annotation.username());
         Object credentials = null;
         List<GrantedAuthority> authorities = Collections.emptyList();
 

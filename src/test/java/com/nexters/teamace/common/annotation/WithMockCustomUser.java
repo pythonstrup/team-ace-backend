@@ -10,5 +10,5 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 @WithMockUser
 @WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
 public @interface WithMockCustomUser {
-    String userId() default "test-user";
+    String username() default "test-user";
 }

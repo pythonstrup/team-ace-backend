@@ -63,7 +63,7 @@ class ChatRoomControllerTest extends ControllerTest {
                                                 .tag("Chat")
                                                 .description("채팅룸 생성")
                                                 .requestFields(
-                                                        fieldWithPath("userId")
+                                                        fieldWithPath("username")
                                                                 .type(JsonFieldType.STRING)
                                                                 .description("사용자 ID"))
                                                 .responseFields(
@@ -88,9 +88,9 @@ class ChatRoomControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("userId가 비어있으면 채팅 생성에 실패한다")
+    @DisplayName("username이 비어있으면 채팅 생성에 실패한다")
     @WithMockCustomUser
-    void createChatRoom_userIdBlank_fail() throws Exception {
+    void createChatRoom_usernameBlank_fail() throws Exception {
         // given
         final ChatRoomRequest request = new ChatRoomRequest("");
         final String requestBody = objectMapper.writeValueAsString(request);
@@ -109,8 +109,8 @@ class ChatRoomControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.error").exists())
                 .andExpect(jsonPath("$.error.code").value("E400"))
-                .andExpect(jsonPath("$.error.data[0].field").value("userId"))
-                .andExpect(jsonPath("$.error.data[0].message").value("userId must not be blank"))
+                .andExpect(jsonPath("$.error.data[0].field").value("username"))
+                .andExpect(jsonPath("$.error.data[0].message").value("username must not be blank"))
                 .andDo(
                         MockMvcRestDocumentationWrapper.document(
                                 "{class_name}/{method_name}",
@@ -121,7 +121,7 @@ class ChatRoomControllerTest extends ControllerTest {
                                                 .tag("Chat")
                                                 .description("채팅룸 생성")
                                                 .requestFields(
-                                                        fieldWithPath("userId")
+                                                        fieldWithPath("username")
                                                                 .type(JsonFieldType.STRING)
                                                                 .description("사용자 ID (빈 값 불가)"))
                                                 .responseFields(

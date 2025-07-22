@@ -2,5 +2,13 @@ package com.nexters.teamace.common.exception;
 
 public class ValidationErrorMessage {
 
-    public static final String USER_ID_NOT_BLANK = "userId must not be blank";
+    /** */
+    public static final String USERNAME_NOT_BLANK = "username must not be blank";
+
+    public static final String NICKNAME_NOT_BLANK = "nickname must not be blank";
+
+    /** Size */
+    public static final String USERNAME_SIZE = "Username must be between 3 and 20 characters";
+
+    public static final String NICKNAME_SIZE = "Nickname must be between 2 and 20 characters";
 }

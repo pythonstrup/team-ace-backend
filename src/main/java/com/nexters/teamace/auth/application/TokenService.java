@@ -1,11 +1,11 @@
 package com.nexters.teamace.auth.application;
 
 public interface TokenService {
-    String createAccessToken(String userId);
+    String createAccessToken(String username);
 
-    String createRefreshToken(String userId);
+    String createRefreshToken(String username);
 
     boolean validateToken(String token);
 
-    String getUserIdFromToken(String token);
+    String getUsernameFromToken(String token);
 }
