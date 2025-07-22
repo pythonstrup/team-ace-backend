@@ -45,19 +45,7 @@ jobs:
     needs: generate-openapi
     runs-on: ubuntu-latest
     steps:
-      - name: Check if Swagger UI is running
-        id: check-swagger
-        run: |
-          if curl -f -s -o /dev/null --connect-timeout 5 --max-time 10 "http://${{ secrets.SERVER_HOST }}:8081/swagger/"; then
-            echo "swagger_running=true" >> $GITHUB_OUTPUT
-            echo "✅ Swagger UI is already running"
-          else
-            echo "swagger_running=false" >> $GITHUB_OUTPUT
-            echo "🚀 Swagger UI needs to be deployed"
-          fi
-
       - name: Deploy Swagger UI
-        if: steps.check-swagger.outputs.swagger_running == 'false'
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -65,9 +53,16 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker stop team-ace-swagger || true
-            docker rm team-ace-swagger || true
+            # Check if container is already running
+            if docker ps --format '{{.Names}}' | grep -q '^team-ace-swagger$'; then
+              echo "✅ Swagger UI container is already running. Skipping deployment."
+              exit 0
+            fi
             
+            # Remove stopped container if exists
+            docker rm team-ace-swagger 2>/dev/null || true
+            
+            echo "🚀 Starting Swagger UI container..."
             # Run Swagger UI container
             docker run -d \
               --name team-ace-swagger \
@@ -78,3 +73,5 @@ jobs:
               -e TRY_IT_OUT_ENABLED=true \
               -v ~/app/docs/openapi3.yaml:/app/openapi3.yaml:ro \
               swaggerapi/swagger-ui:latest
+            
+            echo "✅ Swagger UI container started successfully!"
