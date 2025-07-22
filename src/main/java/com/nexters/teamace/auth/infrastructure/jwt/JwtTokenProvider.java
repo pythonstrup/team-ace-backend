@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class JwtTokenProvider implements TokenService {
+class JwtTokenProvider implements TokenService {
     private final SystemHolder systemHolder;
     private final JwtProperties jwtProperties;
     private final SecretKey key;
