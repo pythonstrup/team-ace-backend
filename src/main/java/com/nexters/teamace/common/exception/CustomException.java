@@ -6,6 +6,8 @@ public class CustomException extends RuntimeException {
 
     public static final CustomException INVALID_TOKEN =
             new CustomException(ErrorType.INVALID_TOKEN);
+    public static final CustomException USER_NOT_FOUND =
+            new CustomException(ErrorType.USER_NOT_FOUND);
 
     @Getter private final ErrorType errorType;
     @Getter private final Object data;

@@ -20,6 +20,7 @@ public enum ErrorType {
 
     /** 404 NOT_FOUND */
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Resource not found"),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "User not found"),
 
     /** 500 INTERNAL_SERVER_ERROR */
     INTERNAL_SERVER_ERROR(
