@@ -2,18 +2,17 @@ package com.nexters.teamace.auth.infrastructure.security;
 
 import static com.nexters.teamace.common.exception.CustomException.INVALID_TOKEN;
 
+import com.nexters.teamace.auth.application.AuthenticatedUser;
 import com.nexters.teamace.auth.application.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -36,8 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         extractValidToken(request)
-                .map(tokenService::getUsernameFromToken)
-                .ifPresent(this::setAuthentication);
+                .ifPresent(
+                        token -> {
+                            final AuthenticatedUser user =
+                                    tokenService.getAuthenticatedUserFromToken(token);
+                            setAuthentication(user);
+                        });
 
         filterChain.doFilter(request, response);
     }
@@ -55,11 +58,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         });
     }
 
-    private void setAuthentication(final String username) {
+    private void setAuthentication(final AuthenticatedUser user) {
         final String credentials = "";
+        final var userDetails = new CustomUserDetails(user.username(), user.userId());
         final var authentication =
                 new UsernamePasswordAuthenticationToken(
-                        username, credentials, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                        userDetails, credentials, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

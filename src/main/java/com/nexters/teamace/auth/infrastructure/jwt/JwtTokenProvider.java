@@ -1,5 +1,6 @@
 package com.nexters.teamace.auth.infrastructure.jwt;
 
+import com.nexters.teamace.auth.application.AuthenticatedUser;
 import com.nexters.teamace.auth.application.TokenService;
 import com.nexters.teamace.common.application.SystemHolder;
 import io.jsonwebtoken.Claims;
@@ -11,6 +12,8 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 class JwtTokenProvider implements TokenService {
+    private static final String USER_ID = "userId";
+
     private final SystemHolder systemHolder;
     private final JwtProperties jwtProperties;
     private final SecretKey key;
@@ -30,29 +35,35 @@ class JwtTokenProvider implements TokenService {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createAccessToken(String username) {
-        return createToken(username, jwtProperties.accessTokenValidity());
+    public String createAccessToken(final AuthenticatedUser user) {
+        return createToken(user, jwtProperties.accessTokenValidity());
     }
 
-    public String createRefreshToken(final String username) {
-        return createToken(username, jwtProperties.refreshTokenValidity());
+    public String createRefreshToken(final AuthenticatedUser user) {
+        return createToken(user, jwtProperties.refreshTokenValidity());
     }
 
-    private String createToken(final String username, final long validityInMilliseconds) {
+    private String createToken(final AuthenticatedUser user, final long validityInMilliseconds) {
         final long currentTimeMillis = systemHolder.currentTimeMillis();
         final long expiration = currentTimeMillis + validityInMilliseconds;
 
+        final Map<String, Object> payload = new HashMap<>();
+        payload.put(USER_ID, user.userId());
+
         return Jwts.builder()
-                .subject(username)
+                .subject(user.username())
+                .claims(payload)
                 .issuedAt(new Date(currentTimeMillis))
                 .expiration(new Date(expiration))
                 .signWith(key)
                 .compact();
     }
 
-    public String getUsernameFromToken(final String token) {
+    public AuthenticatedUser getAuthenticatedUserFromToken(final String token) {
         final Claims claims = getClaims(token);
-        return claims.getSubject();
+        final String username = claims.getSubject();
+        final Long userId = claims.get(USER_ID, Long.class);
+        return new AuthenticatedUser(username, userId);
     }
 
     public boolean validateToken(final String token) {

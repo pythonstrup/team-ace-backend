@@ -17,9 +17,11 @@ public class AuthService {
 
     public LoginResult login(final LoginCommand command) {
         final GetUserResult user = userService.getUserByUsername(command.username());
+        final var authenticatedUser =
+                new AuthenticatedUser(user.username(), user.id());
 
-        final String accessToken = tokenService.createAccessToken(user.username());
-        final String refreshToken = tokenService.createRefreshToken(user.username());
+        final String accessToken = tokenService.createAccessToken(authenticatedUser);
+        final String refreshToken = tokenService.createRefreshToken(authenticatedUser);
 
         return new LoginResult(user.username(), accessToken, refreshToken);
     }
@@ -27,9 +29,11 @@ public class AuthService {
     public SignupResult signup(final SignupCommand command) {
         final var createUserCommand = new CreateUserCommand(command.username(), command.nickname());
         final CreateUserResult user = userService.createUser(createUserCommand);
+        final var authenticatedUser =
+                new AuthenticatedUser(user.username(), user.id());
 
-        final String accessToken = tokenService.createAccessToken(user.username());
-        final String refreshToken = tokenService.createRefreshToken(user.username());
+        final String accessToken = tokenService.createAccessToken(authenticatedUser);
+        final String refreshToken = tokenService.createRefreshToken(authenticatedUser);
 
         return new SignupResult(user.username(), accessToken, refreshToken);
     }
