@@ -186,7 +186,7 @@ class ChatRoomControllerTest extends ControllerTest {
                                                 .tag("Chat")
                                                 .description("채팅룸 생성 - 인증 실패")
                                                 .requestFields(
-                                                        fieldWithPath("userId")
+                                                        fieldWithPath("username")
                                                                 .type(JsonFieldType.STRING)
                                                                 .description("사용자 ID"))
                                                 .responseFields(
