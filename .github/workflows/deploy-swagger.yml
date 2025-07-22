@@ -74,8 +74,6 @@ jobs:
               --restart unless-stopped \
               -p 8081:8080 \
               -e SWAGGER_JSON=/app/openapi3.yaml \
-              -e BASE_URL=/swagger \
-              -e DOM_ID=swagger-ui \
               -e FILTER=true \
               -e TRY_IT_OUT_ENABLED=true \
               -v ~/app/docs/openapi3.yaml:/app/openapi3.yaml:ro \
