@@ -21,7 +21,7 @@ public class ChatRoomController {
     @PostMapping
     public ApiResponse<ChatRoomResponse> createChatRoom(
             @RequestBody @Valid final ChatRoomRequest request) {
-        final ChatRoomCommand command = new ChatRoomCommand(request.userId());
+        final ChatRoomCommand command = new ChatRoomCommand(request.username());
         final ChatRoomResult chatRoom = chatRoomService.createChat(command);
         return ApiResponse.success(
                 new ChatRoomResponse(chatRoom.chatRoomId(), chatRoom.firstChat()));

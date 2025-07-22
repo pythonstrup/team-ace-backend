@@ -30,27 +30,27 @@ class JwtTokenProvider implements TokenService {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createAccessToken(String userId) {
-        return createToken(userId, jwtProperties.accessTokenValidity());
+    public String createAccessToken(String username) {
+        return createToken(username, jwtProperties.accessTokenValidity());
     }
 
-    public String createRefreshToken(final String userId) {
-        return createToken(userId, jwtProperties.refreshTokenValidity());
+    public String createRefreshToken(final String username) {
+        return createToken(username, jwtProperties.refreshTokenValidity());
     }
 
-    private String createToken(final String userId, final long validityInMilliseconds) {
+    private String createToken(final String username, final long validityInMilliseconds) {
         final long currentTimeMillis = systemHolder.currentTimeMillis();
         final long expiration = currentTimeMillis + validityInMilliseconds;
 
         return Jwts.builder()
-                .subject(userId)
+                .subject(username)
                 .issuedAt(new Date(currentTimeMillis))
                 .expiration(new Date(expiration))
                 .signWith(key)
                 .compact();
     }
 
-    public String getUserIdFromToken(final String token) {
+    public String getUsernameFromToken(final String token) {
         final Claims claims = getClaims(token);
         return claims.getSubject();
     }

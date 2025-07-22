@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         extractValidToken(request)
-                .map(tokenService::getUserIdFromToken)
+                .map(tokenService::getUsernameFromToken)
                 .ifPresent(this::setAuthentication);
 
         filterChain.doFilter(request, response);
@@ -55,11 +55,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         });
     }
 
-    private void setAuthentication(final String userId) {
+    private void setAuthentication(final String username) {
         final String credentials = "";
         final var authentication =
                 new UsernamePasswordAuthenticationToken(
-                        userId, credentials, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                        username, credentials, List.of(new SimpleGrantedAuthority("ROLE_USER")));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

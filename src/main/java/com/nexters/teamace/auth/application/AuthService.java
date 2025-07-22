@@ -1,5 +1,9 @@
 package com.nexters.teamace.auth.application;
 
+import com.nexters.teamace.user.application.CreateUserCommand;
+import com.nexters.teamace.user.application.CreateUserResult;
+import com.nexters.teamace.user.application.GetUserResult;
+import com.nexters.teamace.user.application.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,15 +13,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
     private final TokenService tokenService;
+    private final UserService userService;
 
     public LoginResult login(final LoginCommand command) {
-        final String userId = command.userId();
-        log.info("Login attempt for userId: {}", userId);
+        final GetUserResult user = userService.getUserByUsername(command.username());
 
-        final String accessToken = tokenService.createAccessToken(userId);
-        final String refreshToken = tokenService.createRefreshToken(userId);
+        final String accessToken = tokenService.createAccessToken(user.username());
+        final String refreshToken = tokenService.createRefreshToken(user.username());
 
-        log.info("Login successful for userId: {}", userId);
-        return new LoginResult(userId, accessToken, refreshToken);
+        return new LoginResult(user.username(), accessToken, refreshToken);
+    }
+
+    public SignupResult signup(final SignupCommand command) {
+        final var createUserCommand = new CreateUserCommand(command.username(), command.nickname());
+        final CreateUserResult user = userService.createUser(createUserCommand);
+
+        final String accessToken = tokenService.createAccessToken(user.username());
+        final String refreshToken = tokenService.createRefreshToken(user.username());
+
+        return new SignupResult(user.username(), accessToken, refreshToken);
     }
 }
