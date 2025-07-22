@@ -119,7 +119,7 @@ class ChatRoomControllerTest extends ControllerTest {
                                 resource(
                                         ResourceSnippetParameters.builder()
                                                 .tag("Chat")
-                                                .description("채팅룸 생성 - userId 검증 실패")
+                                                .description("채팅룸 생성")
                                                 .requestFields(
                                                         fieldWithPath("userId")
                                                                 .type(JsonFieldType.STRING)
@@ -149,6 +149,65 @@ class ChatRoomControllerTest extends ControllerTest {
                                                         fieldWithPath("error.data[].message")
                                                                 .type(JsonFieldType.STRING)
                                                                 .description("검증 실패 메시지"))
+                                                .requestSchema(schema("ChatRoomRequest"))
+                                                .responseSchema(schema("ErrorResponse"))
+                                                .build())));
+    }
+
+    @Test
+    @DisplayName("인증 없이 채팅방 생성 요청 시 401 Unauthorized를 반환한다")
+    void createChatRoom_withoutAuth_unauthorized() throws Exception {
+        // given
+        final ChatRoomRequest request = new ChatRoomRequest("user123");
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        post("/api/v1/chat-rooms")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody));
+
+        // then
+        resultActions
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.error").exists())
+                .andExpect(jsonPath("$.error.code").value("E40100"))
+                .andExpect(jsonPath("$.error.message").value("Invalid or expired token"))
+                .andDo(
+                        MockMvcRestDocumentationWrapper.document(
+                                "{class_name}/{method_name}",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                resource(
+                                        ResourceSnippetParameters.builder()
+                                                .tag("Chat")
+                                                .description("채팅룸 생성 - 인증 실패")
+                                                .requestFields(
+                                                        fieldWithPath("userId")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("사용자 ID"))
+                                                .responseFields(
+                                                        fieldWithPath("success")
+                                                                .type(JsonFieldType.BOOLEAN)
+                                                                .description("성공 여부 (false)"),
+                                                        fieldWithPath("data")
+                                                                .type(JsonFieldType.NULL)
+                                                                .description("응답 데이터 (실패 시 null)"),
+                                                        fieldWithPath("error")
+                                                                .type(JsonFieldType.OBJECT)
+                                                                .description("에러 정보"),
+                                                        fieldWithPath("error.code")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("에러 코드 (E401)"),
+                                                        fieldWithPath("error.message")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("에러 메시지"),
+                                                        fieldWithPath("error.data")
+                                                                .type(JsonFieldType.NULL)
+                                                                .description("추가 에러 데이터 (null)"))
                                                 .requestSchema(schema("ChatRoomRequest"))
                                                 .responseSchema(schema("ErrorResponse"))
                                                 .build())));
