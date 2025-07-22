@@ -17,6 +17,8 @@ import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.nexters.teamace.auth.application.LoginCommand;
 import com.nexters.teamace.auth.application.LoginResult;
+import com.nexters.teamace.auth.application.RefreshTokenCommand;
+import com.nexters.teamace.auth.application.RefreshTokenResult;
 import com.nexters.teamace.auth.application.SignupCommand;
 import com.nexters.teamace.auth.application.SignupResult;
 import com.nexters.teamace.common.utils.ControllerTest;
@@ -294,6 +296,131 @@ class AuthControllerTest extends ControllerTest {
                                                                 .type(JsonFieldType.STRING)
                                                                 .description("검증 실패 메시지"))
                                                 .requestSchema(schema("SignupRequest"))
+                                                .responseSchema(schema("ErrorResponse"))
+                                                .build())));
+    }
+
+    @Test
+    @DisplayName("토큰을 리프레시할 수 있다")
+    void refreshToken() throws Exception {
+        // given
+        final RefreshTokenRequest request = new RefreshTokenRequest("valid-refresh-token");
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        final RefreshTokenResult refreshTokenResult = new RefreshTokenResult("new-access-token");
+        given(authService.refreshToken(any(RefreshTokenCommand.class)))
+                .willReturn(refreshTokenResult);
+
+        // when
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        post("/api/v1/auth/token/refresh")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody));
+
+        final RefreshTokenResponse expectedResponse = new RefreshTokenResponse("new-access-token");
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data", equalTo(asParsedJson(expectedResponse))))
+                .andExpect(jsonPath("$.error").doesNotExist())
+                .andDo(
+                        MockMvcRestDocumentationWrapper.document(
+                                "{class_name}/{method_name}",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                resource(
+                                        ResourceSnippetParameters.builder()
+                                                .tag("Auth")
+                                                .description("토큰 리프레시")
+                                                .requestFields(
+                                                        fieldWithPath("refreshToken")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("리프레시 토큰"))
+                                                .responseFields(
+                                                        fieldWithPath("success")
+                                                                .type(JsonFieldType.BOOLEAN)
+                                                                .description("성공 여부"),
+                                                        fieldWithPath("data")
+                                                                .type(JsonFieldType.OBJECT)
+                                                                .description("응답 데이터"),
+                                                        fieldWithPath("data.accessToken")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("새로운 액세스 토큰"),
+                                                        fieldWithPath("error")
+                                                                .type(JsonFieldType.NULL)
+                                                                .description("에러 정보 (성공 시 null)"))
+                                                .requestSchema(schema("RefreshTokenRequest"))
+                                                .responseSchema(schema("RefreshTokenResponse"))
+                                                .build())));
+    }
+
+    @Test
+    @DisplayName("refreshToken이 비어있으면 토큰 리프레시에 실패한다")
+    void refreshToken_tokenBlank_fail() throws Exception {
+        // given
+        final RefreshTokenRequest request = new RefreshTokenRequest("");
+        final String requestBody = objectMapper.writeValueAsString(request);
+
+        // when
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        post("/api/v1/auth/token/refresh")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody));
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.error").exists())
+                .andExpect(jsonPath("$.error.code").value("E400"))
+                .andExpect(jsonPath("$.error.data[0].field").value("refreshToken"))
+                .andExpect(
+                        jsonPath("$.error.data[0].message")
+                                .value("refresh token must not be blank"))
+                .andDo(
+                        MockMvcRestDocumentationWrapper.document(
+                                "{class_name}/{method_name}",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                resource(
+                                        ResourceSnippetParameters.builder()
+                                                .tag("Auth")
+                                                .description("토큰 리프레시 - refreshToken 검증 실패")
+                                                .requestFields(
+                                                        fieldWithPath("refreshToken")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("리프레시 토큰 (빈 값 불가)"))
+                                                .responseFields(
+                                                        fieldWithPath("success")
+                                                                .type(JsonFieldType.BOOLEAN)
+                                                                .description("성공 여부 (false)"),
+                                                        fieldWithPath("data")
+                                                                .type(JsonFieldType.NULL)
+                                                                .description("응답 데이터 (실패 시 null)"),
+                                                        fieldWithPath("error")
+                                                                .type(JsonFieldType.OBJECT)
+                                                                .description("에러 정보"),
+                                                        fieldWithPath("error.code")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("에러 코드"),
+                                                        fieldWithPath("error.message")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("에러 메시지"),
+                                                        fieldWithPath("error.data")
+                                                                .type(JsonFieldType.ARRAY)
+                                                                .description("검증 실패 상세 정보"),
+                                                        fieldWithPath("error.data[].field")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("검증 실패 필드명"),
+                                                        fieldWithPath("error.data[].message")
+                                                                .type(JsonFieldType.STRING)
+                                                                .description("검증 실패 메시지"))
+                                                .requestSchema(schema("RefreshTokenRequest"))
                                                 .responseSchema(schema("ErrorResponse"))
                                                 .build())));
     }
