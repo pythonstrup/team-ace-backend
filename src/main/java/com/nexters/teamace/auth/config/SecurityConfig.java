@@ -35,10 +35,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers("/api/v1/chat-rooms/**")
-                                        .authenticated()
+                                        .requestMatchers("/api/v1/auth/**")
+                                        .permitAll()
                                         .anyRequest()
-                                        .permitAll())
+                                        .authenticated())
                 .exceptionHandling(
                         exceptions ->
                                 exceptions
