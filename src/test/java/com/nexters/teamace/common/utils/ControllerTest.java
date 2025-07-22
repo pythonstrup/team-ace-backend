@@ -10,6 +10,7 @@ import com.nexters.teamace.auth.infrastructure.security.JwtAuthenticationFilter;
 import com.nexters.teamace.auth.infrastructure.security.SecurityErrorHandler;
 import com.nexters.teamace.chat.application.ChatRoomService;
 import com.nexters.teamace.common.presentation.GlobalExceptionHandler;
+import com.nexters.teamace.user.application.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,6 +34,7 @@ public abstract class ControllerTest {
     @MockitoBean protected ChatRoomService chatRoomService;
     @MockitoBean protected TokenService tokenService;
     @MockitoBean protected AuthService authService;
+    @MockitoBean protected UserService userService;
 
     protected Object asParsedJson(Object obj) throws JsonProcessingException {
         String json = objectMapper.writeValueAsString(obj);
