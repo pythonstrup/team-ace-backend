@@ -24,6 +24,9 @@ public enum ErrorType {
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Resource not found"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "User not found"),
 
+    /** 409 CONFLICT */
+    USER_ALREADY_EXISTS(HttpStatus.CONFLICT, ErrorCode.E409, "User already exists"),
+
     /** 500 INTERNAL_SERVER_ERROR */
     INTERNAL_SERVER_ERROR(
             HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "An unexpected error occurred"),

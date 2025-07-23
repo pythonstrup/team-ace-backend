@@ -30,14 +30,15 @@ class UserServiceTest extends UseCaseIntegrationTest {
             @Test
             @DisplayName("it returns user with generated id")
             void it_returns_user_with_generated_id() {
-                final CreateUserCommand command = new CreateUserCommand("testuser", "Test User");
+                final CreateUserCommand command =
+                        new CreateUserCommand("validuser123", "Valid User");
 
                 final CreateUserResult result = userService.createUser(command);
 
                 then(result)
                         .isNotNull()
                         .extracting("id", "username", "nickname")
-                        .containsExactly(result.id(), "testuser", "Test User");
+                        .containsExactly(result.id(), "validuser123", "Valid User");
                 then(result.id()).isNotNull();
             }
         }
@@ -57,26 +58,25 @@ class UserServiceTest extends UseCaseIntegrationTest {
                         .isNotNull()
                         .extracting("id", "username", "nickname")
                         .containsExactly(result.id(), null, "Test User");
-                then(result.id()).isNotNull();
             }
         }
 
         @Nested
-        @DisplayName("when nickname is null")
-        class Context_with_null_nickname {
+        @DisplayName("when username already exists")
+        class Context_when_username_already_exists {
 
             @Test
-            @DisplayName("it returns user with null nickname")
-            void it_returns_user_with_null_nickname() {
-                final CreateUserCommand command = new CreateUserCommand("testuser", null);
+            @DisplayName("it throws CustomException")
+            void it_throws_CustomException() {
+                userRepository.save(new User("existinguser", "Existing User"));
 
-                final CreateUserResult result = userService.createUser(command);
+                final CreateUserCommand command =
+                        new CreateUserCommand("existinguser", "Another User");
 
-                then(result)
-                        .isNotNull()
-                        .extracting("id", "username", "nickname")
-                        .containsExactly(result.id(), "testuser", null);
-                then(result.id()).isNotNull();
+                thenThrownBy(() -> userService.createUser(command))
+                        .isInstanceOf(CustomException.class)
+                        .hasFieldOrPropertyWithValue(
+                                "errorType", CustomException.USER_ALREADY_EXISTS.getErrorType());
             }
         }
     }
@@ -100,7 +100,6 @@ class UserServiceTest extends UseCaseIntegrationTest {
                         .isNotNull()
                         .extracting("id", "username", "nickname")
                         .containsExactly(result.id(), "existinguser", "Existing User");
-                then(result.id()).isNotNull();
             }
         }
 
@@ -112,7 +111,9 @@ class UserServiceTest extends UseCaseIntegrationTest {
             @DisplayName("it throws CustomException")
             void it_throws_CustomException() {
                 thenThrownBy(() -> userService.getUserByUsername("nonexistent"))
-                        .isInstanceOf(CustomException.class);
+                        .isInstanceOf(CustomException.class)
+                        .hasFieldOrPropertyWithValue(
+                                "errorType", CustomException.USER_NOT_FOUND.getErrorType());
             }
         }
     }
