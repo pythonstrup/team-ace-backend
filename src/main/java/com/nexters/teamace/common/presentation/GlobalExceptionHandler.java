@@ -90,6 +90,16 @@ public class GlobalExceptionHandler {
                 ErrorType.CONSTRAINT_VIOLATION.getStatus());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException e) {
+        final String message = e.getMessage();
+        log.debug("Invalid argument provided: {}", message, e);
+
+        return new ResponseEntity<>(
+                ApiResponse.error(ErrorType.INVALID_ARGUMENT, message),
+                ErrorType.INVALID_ARGUMENT.getStatus());
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiResponse<Void>> handleAuthenticationException(
             final AuthenticationException e) {

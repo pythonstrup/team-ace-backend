@@ -10,6 +10,7 @@ public enum ErrorType {
     METHOD_ARGUMENT_NOT_VALID(HttpStatus.BAD_REQUEST, ErrorCode.E400, "Validation failed"),
     BINDING_ERROR(HttpStatus.BAD_REQUEST, ErrorCode.E400, "Validation failed"),
     CONSTRAINT_VIOLATION(HttpStatus.BAD_REQUEST, ErrorCode.E400, "Validation failed"),
+    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST, ErrorCode.E400, "Invalid argument provided"),
 
     /** 401 UNAUTHORIZED */
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, ErrorCode.E401, "Authentication required"),
