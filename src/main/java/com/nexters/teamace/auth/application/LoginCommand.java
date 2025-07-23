@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * 로그인 요청을 위한 Command 객체입니다.
+ *
  * <p>생성 시 username의 유효성을 검증합니다.
  *
  * @param username 로그인할 사용자명 (1-20자, null/blank 불허)

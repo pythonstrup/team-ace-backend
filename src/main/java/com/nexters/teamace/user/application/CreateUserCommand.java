@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * 사용자 생성 요청을 위한 Command 객체입니다.
+ *
  * <p>생성 시 username과 nickname의 유효성을 검증합니다. null 값은 허용되지만 blank는 허용되지 않습니다.
  *
  * @param username 생성할 사용자명 (null 허용, null이 아닌 경우 1-20자, blank 불허)

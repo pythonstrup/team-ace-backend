@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * 회원가입 요청을 위한 Command 객체입니다.
+ *
  * <p>생성 시 username과 nickname의 유효성을 검증합니다.
  *
  * @param username 회원가입할 사용자명 (1-20자, null/blank 불허)

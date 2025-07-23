@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * 토큰 갱신 요청을 위한 Command 객체입니다.
+ *
  * <p>생성 시 refreshToken의 유효성을 검증합니다.
  *
  * @param refreshToken 갱신에 사용할 리프레시 토큰 (null/blank 불허)
