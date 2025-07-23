@@ -39,7 +39,7 @@ public class AuthService {
 
     public RefreshTokenResult refreshToken(final RefreshTokenCommand command) {
         if (!tokenService.validateToken(command.refreshToken())) {
-            throw CustomException.INVALID_TOKEN;
+            throw CustomException.INVALID_REFRESH_TOKEN;
         }
 
         final AuthenticatedUser user =

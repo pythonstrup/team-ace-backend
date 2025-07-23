@@ -14,6 +14,8 @@ public enum ErrorType {
     /** 401 UNAUTHORIZED */
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, ErrorCode.E401, "Authentication required"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, ErrorCode.E40100, "Invalid or expired token"),
+    INVALID_REFRESH_TOKEN(
+            HttpStatus.UNAUTHORIZED, ErrorCode.E40100, "Invalid or expired refresh token"),
 
     /** 403 FORBIDDEN */
     FORBIDDEN(HttpStatus.FORBIDDEN, ErrorCode.E403, "Access denied"),
