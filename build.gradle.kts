@@ -67,6 +67,9 @@ dependencies {
     // restdocs-api-spec
     testImplementation("com.epages:restdocs-api-spec-mockmvc:0.19.4")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+
+    // fixture monkey
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter:1.1.4")
 }
 
 tasks {

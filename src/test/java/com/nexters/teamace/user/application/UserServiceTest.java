@@ -7,6 +7,7 @@ import com.nexters.teamace.common.exception.CustomException;
 import com.nexters.teamace.common.utils.UseCaseIntegrationTest;
 import com.nexters.teamace.user.domain.User;
 import com.nexters.teamace.user.domain.UserRepository;
+import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,13 @@ class UserServiceTest extends UseCaseIntegrationTest {
 
     @Autowired UserRepository userRepository;
 
+    private String generateUserString() {
+        return fixtureMonkey
+                .giveMeBuilder(String.class)
+                .set("$", Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(20))
+                .sample();
+    }
+
     @Nested
     @DisplayName("createUser")
     class Describe_createUser {
@@ -30,15 +38,16 @@ class UserServiceTest extends UseCaseIntegrationTest {
             @Test
             @DisplayName("it returns user with generated id")
             void it_returns_user_with_generated_id() {
-                final CreateUserCommand command =
-                        new CreateUserCommand("validuser123", "Valid User");
+                final String username = generateUserString();
+                final String nickname = generateUserString();
+                final CreateUserCommand command = new CreateUserCommand(username, nickname);
 
                 final CreateUserResult result = userService.createUser(command);
 
                 then(result)
                         .isNotNull()
                         .extracting("id", "username", "nickname")
-                        .containsExactly(result.id(), "validuser123", "Valid User");
+                        .containsExactly(result.id(), username, nickname);
                 then(result.id()).isNotNull();
             }
         }
@@ -50,14 +59,15 @@ class UserServiceTest extends UseCaseIntegrationTest {
             @Test
             @DisplayName("it returns user with null username")
             void it_returns_user_with_null_username() {
-                final CreateUserCommand command = new CreateUserCommand(null, "Test User");
+                final String nickname = generateUserString();
+                final CreateUserCommand command = new CreateUserCommand(null, nickname);
 
                 final CreateUserResult result = userService.createUser(command);
 
                 then(result)
                         .isNotNull()
                         .extracting("id", "username", "nickname")
-                        .containsExactly(result.id(), null, "Test User");
+                        .containsExactly(result.id(), null, nickname);
             }
         }
 
@@ -68,10 +78,13 @@ class UserServiceTest extends UseCaseIntegrationTest {
             @Test
             @DisplayName("it throws CustomException")
             void it_throws_CustomException() {
-                userRepository.save(new User("existinguser", "Existing User"));
+                final String existingUsername = generateUserString();
+                final String existingNickname = generateUserString();
+                userRepository.save(new User(existingUsername, existingNickname));
 
+                final String anotherNickname = generateUserString();
                 final CreateUserCommand command =
-                        new CreateUserCommand("existinguser", "Another User");
+                        new CreateUserCommand(existingUsername, anotherNickname);
 
                 thenThrownBy(() -> userService.createUser(command))
                         .isInstanceOf(CustomException.class)
@@ -92,14 +105,16 @@ class UserServiceTest extends UseCaseIntegrationTest {
             @Test
             @DisplayName("it returns user")
             void it_returns_user() {
-                final User user = userRepository.save(new User("existinguser", "Existing User"));
+                final String username = generateUserString();
+                final String nickname = generateUserString();
+                final User user = userRepository.save(new User(username, nickname));
 
                 final GetUserResult result = userService.getUserByUsername(user.getUsername());
 
                 then(result)
                         .isNotNull()
                         .extracting("id", "username", "nickname")
-                        .containsExactly(result.id(), "existinguser", "Existing User");
+                        .containsExactly(result.id(), username, nickname);
             }
         }
 

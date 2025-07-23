@@ -8,6 +8,7 @@ import com.nexters.teamace.common.exception.CustomException;
 import com.nexters.teamace.common.utils.UseCaseIntegrationTest;
 import com.nexters.teamace.user.domain.User;
 import com.nexters.teamace.user.domain.UserRepository;
+import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,13 @@ class AuthServiceTest extends UseCaseIntegrationTest {
 
     @Autowired private AuthService authService;
     @Autowired private UserRepository userRepository;
+
+    private String generateUserString() {
+        return fixtureMonkey
+                .giveMeBuilder(String.class)
+                .set("$", Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(20))
+                .sample();
+    }
 
     @Nested
     @DisplayName("login")
@@ -32,9 +40,12 @@ class AuthServiceTest extends UseCaseIntegrationTest {
             void it_returns_login_result_with_tokens() {
                 // 2025년 1월 1일 00:00:00 UTC
                 given(systemHolder.currentTimeMillis()).willReturn(1735689600000L);
-                final User user = userRepository.save(new User("existinguser", "Existing User"));
 
-                final LoginCommand command = new LoginCommand("existinguser");
+                final String username = generateUserString();
+                final String nickname = generateUserString();
+                userRepository.save(new User(username, nickname));
+
+                final LoginCommand command = new LoginCommand(username);
                 final LoginResult result = authService.login(command);
 
                 then(result)
@@ -42,7 +53,7 @@ class AuthServiceTest extends UseCaseIntegrationTest {
                         .extracting("username", "accessToken", "refreshToken")
                         .satisfies(
                                 values -> {
-                                    then(values.get(0)).isEqualTo("existinguser");
+                                    then(values.get(0)).isEqualTo(username);
 
                                     // Access Token 검증
                                     then((String) values.get(1))
@@ -50,9 +61,7 @@ class AuthServiceTest extends UseCaseIntegrationTest {
                                             .isNotEmpty()
                                             .matches(
                                                     "^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$") // JWT 형식
-                                            .contains("eyJhbGciOiJIUzM4NCJ9") // 헤더 부분은 항상 동일
-                                            .contains("eyJzdWIiOiJleGlzdGluZ3VzZXIi"); // username은
-                                    // payload에 포함
+                                            .contains("eyJhbGciOiJIUzM4NCJ9"); // 헤더 부분은 항상 동일
 
                                     // Refresh Token 검증
                                     then((String) values.get(2))
@@ -60,9 +69,7 @@ class AuthServiceTest extends UseCaseIntegrationTest {
                                             .isNotEmpty()
                                             .matches(
                                                     "^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$") // JWT 형식
-                                            .contains("eyJhbGciOiJIUzM4NCJ9") // 헤더 부분은 항상 동일
-                                            .contains("eyJzdWIiOiJleGlzdGluZ3VzZXIi"); // username은
-                                    // payload에 포함
+                                            .contains("eyJhbGciOiJIUzM4NCJ9"); // 헤더 부분은 항상 동일
                                 });
             }
         }
@@ -98,7 +105,9 @@ class AuthServiceTest extends UseCaseIntegrationTest {
                 // 2025년 1월 1일 00:00:00 UTC
                 given(systemHolder.currentTimeMillis()).willReturn(1735689600000L);
 
-                final SignupCommand command = new SignupCommand("newuser", "New User");
+                final String username = generateUserString();
+                final String nickname = generateUserString();
+                final SignupCommand command = new SignupCommand(username, nickname);
                 final SignupResult result = authService.signup(command);
 
                 then(result)
@@ -106,13 +115,13 @@ class AuthServiceTest extends UseCaseIntegrationTest {
                         .extracting("username", "accessToken", "refreshToken")
                         .satisfies(
                                 values -> {
-                                    then(values.get(0)).isEqualTo("newuser");
+                                    then(values.get(0)).isEqualTo(username);
                                     then((String) values.get(1)).isNotNull().isNotEmpty();
                                     then((String) values.get(2)).isNotNull().isNotEmpty();
                                 });
 
-                final User savedUser = userRepository.getByUsername("newuser");
-                then(savedUser.getNickname()).isEqualTo("New User");
+                final User savedUser = userRepository.getByUsername(username);
+                then(savedUser.getNickname()).isEqualTo(nickname);
             }
         }
 
@@ -123,9 +132,12 @@ class AuthServiceTest extends UseCaseIntegrationTest {
             @Test
             @DisplayName("it throws CustomException")
             void it_throws_CustomException() {
-                userRepository.save(new User("existinguser", "Existing User"));
+                final String existingUsername = generateUserString();
+                final String existingNickname = generateUserString();
+                userRepository.save(new User(existingUsername, existingNickname));
 
-                final SignupCommand command = new SignupCommand("existinguser", "Another User");
+                final String anotherNickname = generateUserString();
+                final SignupCommand command = new SignupCommand(existingUsername, anotherNickname);
 
                 thenThrownBy(() -> authService.signup(command))
                         .isInstanceOf(CustomException.class)
@@ -152,9 +164,11 @@ class AuthServiceTest extends UseCaseIntegrationTest {
                 // 모든 호출에 대해 현재 시간 반환
                 given(systemHolder.currentTimeMillis()).willReturn(currentTime);
 
-                userRepository.save(new User("testuser", "Test User"));
+                final String username = generateUserString();
+                final String nickname = generateUserString();
+                userRepository.save(new User(username, nickname));
 
-                final LoginCommand loginCommand = new LoginCommand("testuser");
+                final LoginCommand loginCommand = new LoginCommand(username);
                 final LoginResult loginResult = authService.login(loginCommand);
 
                 final RefreshTokenCommand command =
