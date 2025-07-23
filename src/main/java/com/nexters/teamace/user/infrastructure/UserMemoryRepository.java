@@ -30,7 +30,7 @@ class UserMemoryRepository implements UserRepository {
     @Override
     public Optional<User> findByUsername(final String username) {
         return data.values().stream()
-                .filter(user -> user.getUsername().equals(username))
+                .filter(user -> user.getUsername() != null && user.getUsername().equals(username))
                 .findFirst();
     }
 }

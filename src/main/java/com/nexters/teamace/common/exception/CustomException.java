@@ -10,6 +10,8 @@ public class CustomException extends RuntimeException {
             new CustomException(ErrorType.INVALID_REFRESH_TOKEN);
     public static final CustomException USER_NOT_FOUND =
             new CustomException(ErrorType.USER_NOT_FOUND);
+    public static final CustomException USER_ALREADY_EXISTS =
+            new CustomException(ErrorType.USER_ALREADY_EXISTS);
 
     @Getter private final ErrorType errorType;
     @Getter private final Object data;
