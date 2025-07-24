@@ -2,7 +2,7 @@ package com.nexters.teamace.common.exception;
 
 public class ValidationErrorMessage {
 
-    /** */
+    /** Not Blank */
     public static final String USERNAME_NOT_BLANK = "username must not be blank";
 
     public static final String NICKNAME_NOT_BLANK = "nickname must not be blank";
