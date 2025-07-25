@@ -11,21 +11,13 @@ public class ConversationService {
     private final ConversationClient conversationClient;
     private final ConversationScriptService conversationScriptService;
 
-    public String chat(String message) {
-        return conversationClient.chat(message);
-    }
-
-    public String chat(final ConversationType conversationType, final String message) {
-        final String script = conversationScriptService.renderScript(conversationType, message);
-        return conversationClient.chat(script, message);
-    }
-
-    public String chat(
+    public <T> T chat(
+            final Class<T> type,
             final ConversationType conversationType,
             final ConversationContext context,
             final String message) {
         final String script =
                 conversationScriptService.renderScript(conversationType, context, message);
-        return conversationClient.chat(script, message);
+        return conversationClient.chat(type, script, message);
     }
 }

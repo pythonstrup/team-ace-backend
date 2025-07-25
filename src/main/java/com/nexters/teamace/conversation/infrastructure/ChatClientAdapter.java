@@ -15,12 +15,7 @@ class ChatClientAdapter implements ConversationClient {
     }
 
     @Override
-    public String chat(String message) {
-        return chatClient.prompt().user(message).call().content();
-    }
-
-    @Override
-    public String chat(String script, String message) {
-        return chatClient.prompt().system(script).user(message).call().content();
+    public <T> T chat(Class<T> type, String script, String message) {
+        return chatClient.prompt().system(script).user(message).call().entity(type);
     }
 }

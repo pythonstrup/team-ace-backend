@@ -2,7 +2,5 @@ package com.nexters.teamace.conversation.application;
 
 public interface ConversationClient {
 
-    String chat(String message);
-
-    String chat(String script, String message);
+    <T> T chat(Class<T> type, String script, String message);
 }
