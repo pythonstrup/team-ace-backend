@@ -24,7 +24,6 @@ public enum ErrorType {
     /** 404 NOT_FOUND */
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Resource not found"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "User not found"),
-    PROMPT_TEMPLATE_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Prompt template not found"),
 
     /** 409 CONFLICT */
     USER_ALREADY_EXISTS(HttpStatus.CONFLICT, ErrorCode.E409, "User already exists"),
@@ -32,6 +31,8 @@ public enum ErrorType {
     /** 500 INTERNAL_SERVER_ERROR */
     INTERNAL_SERVER_ERROR(
             HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "An unexpected error occurred"),
+    PROMPT_TEMPLATE_NOT_FOUND(
+            HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "프롬프트 템플릿이 등록되지 않았습니다"),
     ;
 
     @Getter private final HttpStatus status;
