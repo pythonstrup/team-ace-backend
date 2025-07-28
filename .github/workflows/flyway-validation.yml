@@ -1,0 +1,53 @@
+name: ✅ Flyway Migration Check
+
+on:
+  pull_request:
+    paths:
+      - 'src/main/resources/db/migration/**'
+
+jobs:
+  check-migrations:
+    name: 🔍 Check Migration Files
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Get code
+        uses: actions/checkout@v4
+        
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'oracle'
+          
+      - name: 🔧 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        
+      - name: 🐬 Setup MySQL
+        run: |
+          docker run --name mysql-test \
+            -e MYSQL_ROOT_PASSWORD=1234 \
+            -e MYSQL_DATABASE=gamchi \
+            -p 3306:3306 \
+            -d mysql:8.0
+          
+          # Wait for MySQL to be ready
+          echo "⏳ Waiting for MySQL to start..."
+          until docker exec mysql-test mysqladmin ping -h"localhost" --silent; do
+            sleep 2
+          done
+          echo "✅ MySQL is ready!"
+        
+      - name: 📋 Check migration files
+        run: |
+          echo "🚀 Checking migration files..."
+          ./scripts/validate-migration-files.sh
+          
+      - name: 🧪 Validate SQL syntax
+        env:
+          DB_HOST: localhost
+          DB_USERNAME: root
+          DB_PASSWORD: 1234
+        run: |
+          echo "🧪 Testing SQL syntax with Flyway..."
+          ./gradlew flywayValidate
