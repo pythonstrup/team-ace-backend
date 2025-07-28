@@ -5,6 +5,15 @@ plugins {
     id("org.asciidoctor.jvm.convert") version "3.3.2"
     id("com.epages.restdocs-api-spec") version "0.19.4"
     id("com.diffplug.spotless") version "7.1.0"
+    id("org.flywaydb.flyway") version "11.10.4"
+}
+
+// Flyway 플러그인을 위한 별도 구성
+buildscript {
+    dependencies {
+        classpath("org.flywaydb:flyway-mysql:11.10.4")
+        classpath("com.mysql:mysql-connector-j:9.1.0")
+    }
 }
 
 group = "com.nexters"
@@ -62,6 +71,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("com.mysql:mysql-connector-j")
 
+    // flyway
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-mysql")
+
     // p6spy
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1")
 
@@ -117,4 +130,11 @@ openapi3 {
     version = "0.0.1"
     format = "yaml"
     outputFileNamePrefix = "openapi3"
+}
+
+flyway {
+    url = "jdbc:mysql://${System.getenv("DB_HOST") ?: "localhost"}:3306/gamchi"
+    user = System.getenv("DB_USERNAME") ?: "root"
+    password = System.getenv("DB_PASSWORD") ?: "1234"
+    locations = arrayOf("classpath:db/migration")
 }
