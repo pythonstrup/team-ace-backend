@@ -15,7 +15,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public CreateUserResult createUser(final CreateUserCommand command) {
-        if (userRepository.findByUsername(command.username()).isPresent()) {
+        if (userRepository.existsByUsername(command.username())) {
             throw USER_ALREADY_EXISTS;
         }
 

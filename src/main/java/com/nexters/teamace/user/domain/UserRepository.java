@@ -10,6 +10,8 @@ public interface UserRepository {
 
     Optional<User> findByUsername(String username);
 
+    boolean existsByUsername(String username);
+
     default User getByUsername(String username) {
         return findByUsername(username).orElseThrow(() -> USER_NOT_FOUND);
     }
