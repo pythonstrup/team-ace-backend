@@ -17,15 +17,15 @@ class ConversationScriptServiceTest extends UseCaseIntegrationTest {
     @Autowired private ConversationScriptService conversationScriptService;
 
     @Nested
-    @DisplayName("getPromptTemplate")
+    @DisplayName("프롬프트 템플릿 조회")
     class Describe_getPromptTemplate {
 
         @Nested
-        @DisplayName("when ConversationType is CHAT_ASSISTANT")
+        @DisplayName("ConversationType이 CHAT_ASSISTANT일 때")
         class Context_with_chat_assistant_type {
 
             @Test
-            @DisplayName("it returns ConversationScript with chat assistant template")
+            @DisplayName("채팅 어시스턴트 템플릿을 가진 ConversationScript를 반환한다")
             void it_returns_conversation_script_with_chat_assistant_template() {
                 // when
                 ConversationScript result =
@@ -38,11 +38,11 @@ class ConversationScriptServiceTest extends UseCaseIntegrationTest {
         }
 
         @Nested
-        @DisplayName("when ConversationType is EMOTION_ANALYSIS")
+        @DisplayName("ConversationType이 EMOTION_ANALYSIS일 때")
         class Context_with_emotion_analysis_type {
 
             @Test
-            @DisplayName("it returns ConversationScript with emotion analysis template")
+            @DisplayName("감정 분석 템플릿을 가진 ConversationScript를 반환한다")
             void it_returns_conversation_script_with_emotion_analysis_template() {
                 // when
                 ConversationScript result =
@@ -59,15 +59,15 @@ class ConversationScriptServiceTest extends UseCaseIntegrationTest {
     }
 
     @Nested
-    @DisplayName("renderScript")
+    @DisplayName("스크립트 렌더링")
     class Describe_renderScript {
 
         @Nested
-        @DisplayName("when valid ConversationType and ConversationContext are provided")
+        @DisplayName("유효한 ConversationType과 ConversationContext가 주어졌을 때")
         class Context_with_valid_type_and_context {
 
             @Test
-            @DisplayName("it renders template with variables replaced")
+            @DisplayName("변수가 대체된 템플릿을 렌더링한다")
             void it_renders_template_with_variables_replaced() {
                 // given
                 String sessionKey = "test-session";

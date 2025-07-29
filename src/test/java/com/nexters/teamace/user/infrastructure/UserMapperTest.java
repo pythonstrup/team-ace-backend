@@ -13,15 +13,15 @@ class UserMapperTest {
     private final UserMapper userMapper = new UserMapper();
 
     @Nested
-    @DisplayName("toEntity")
+    @DisplayName("엔티티로 변환")
     class Describe_toEntity {
 
         @Nested
-        @DisplayName("when user has id")
+        @DisplayName("사용자가 ID를 가질 때")
         class Context_when_user_has_id {
 
             @Test
-            @DisplayName("it returns UserEntity with all fields")
+            @DisplayName("모든 필드를 가진 UserEntity를 반환한다")
             void it_returns_UserEntity_with_all_fields() {
                 final Long id = 1L;
                 final String username = "testuser";
@@ -37,11 +37,11 @@ class UserMapperTest {
         }
 
         @Nested
-        @DisplayName("when user has no id")
+        @DisplayName("사용자가 ID를 가지지 않을 때")
         class Context_when_user_has_no_id {
 
             @Test
-            @DisplayName("it returns UserEntity with null id")
+            @DisplayName("null ID를 가진 UserEntity를 반환한다")
             void it_returns_UserEntity_with_null_id() {
                 final String username = "testuser";
                 final String nickname = "Test User";
@@ -57,15 +57,15 @@ class UserMapperTest {
     }
 
     @Nested
-    @DisplayName("toDomain")
+    @DisplayName("도메인으로 변환")
     class Describe_toDomain {
 
         @Nested
-        @DisplayName("when entity has all fields")
+        @DisplayName("엔티티가 모든 필드를 가질 때")
         class Context_when_entity_has_all_fields {
 
             @Test
-            @DisplayName("it returns User with all fields")
+            @DisplayName("모든 필드를 가진 User를 반환한다")
             void it_returns_User_with_all_fields() {
                 final Long id = 1L;
                 final String username = "testuser";

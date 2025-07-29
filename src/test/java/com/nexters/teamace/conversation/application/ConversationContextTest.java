@@ -12,15 +12,15 @@ import org.junit.jupiter.api.Test;
 class ConversationContextTest {
 
     @Nested
-    @DisplayName("constructor")
+    @DisplayName("생성자")
     class Describe_constructor {
 
         @Nested
-        @DisplayName("when sessionKey is null")
+        @DisplayName("세션 키가 null일 때")
         class Context_with_null_sessionKey {
 
             @Test
-            @DisplayName("it throws IllegalArgumentException")
+            @DisplayName("IllegalArgumentException을 던진다")
             void it_throws_illegal_argument_exception() {
                 thenThrownBy(() -> new ConversationContext(null, List.of()))
                         .isInstanceOf(IllegalArgumentException.class)
@@ -29,11 +29,11 @@ class ConversationContextTest {
         }
 
         @Nested
-        @DisplayName("when sessionKey is empty")
+        @DisplayName("세션 키가 비어있을 때")
         class Context_with_empty_sessionKey {
 
             @Test
-            @DisplayName("it throws IllegalArgumentException")
+            @DisplayName("IllegalArgumentException을 던진다")
             void it_throws_illegal_argument_exception() {
                 thenThrownBy(() -> new ConversationContext("   ", List.of()))
                         .isInstanceOf(IllegalArgumentException.class)
@@ -42,11 +42,11 @@ class ConversationContextTest {
         }
 
         @Nested
-        @DisplayName("when previousMessages is null")
+        @DisplayName("이전 메시지가 null일 때")
         class Context_with_null_previousMessages {
 
             @Test
-            @DisplayName("it creates ConversationContext with empty list")
+            @DisplayName("빈 리스트로 ConversationContext를 생성한다")
             void it_creates_context_with_empty_list() {
                 // given
                 String sessionKey = "session123";
@@ -62,11 +62,11 @@ class ConversationContextTest {
         }
 
         @Nested
-        @DisplayName("when valid sessionKey and previousMessages are provided")
+        @DisplayName("유효한 세션 키와 이전 메시지가 주어졌을 때")
         class Context_with_valid_sessionKey_and_previousMessages {
 
             @Test
-            @DisplayName("it creates ConversationContext successfully")
+            @DisplayName("ConversationContext를 성공적으로 생성한다")
             void it_creates_conversation_context() {
                 // given
                 String sessionKey = "session123";
@@ -83,11 +83,11 @@ class ConversationContextTest {
         }
 
         @Nested
-        @DisplayName("when previousMessages is empty list")
+        @DisplayName("이전 메시지가 빈 리스트일 때")
         class Context_with_empty_previousMessages {
 
             @Test
-            @DisplayName("it creates ConversationContext with empty list")
+            @DisplayName("빈 리스트로 ConversationContext를 생성한다")
             void it_creates_context_with_empty_list() {
                 // given
                 String sessionKey = "session123";

@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Test;
 class ConversationScriptTest {
 
     @Nested
-    @DisplayName("constructor")
+    @DisplayName("생성자")
     class Describe_constructor {
 
         @Nested
-        @DisplayName("when type is null")
+        @DisplayName("타입이 null일 때")
         class Context_with_null_type {
 
             @Test
-            @DisplayName("it throws IllegalArgumentException")
+            @DisplayName("IllegalArgumentException을 던진다")
             void it_throws_illegal_argument_exception() {
                 thenThrownBy(() -> new ConversationScript(null, "content"))
                         .isInstanceOf(IllegalArgumentException.class)
@@ -30,11 +30,11 @@ class ConversationScriptTest {
         }
 
         @Nested
-        @DisplayName("when content is null")
+        @DisplayName("콘텐츠가 null일 때")
         class Context_with_null_content {
 
             @Test
-            @DisplayName("it throws IllegalArgumentException")
+            @DisplayName("IllegalArgumentException을 던진다")
             void it_throws_illegal_argument_exception() {
                 thenThrownBy(() -> new ConversationScript(ConversationType.CHAT_ASSISTANT, null))
                         .isInstanceOf(IllegalArgumentException.class)
@@ -43,11 +43,11 @@ class ConversationScriptTest {
         }
 
         @Nested
-        @DisplayName("when content is empty")
+        @DisplayName("콘텐츠가 비어있을 때")
         class Context_with_empty_content {
 
             @Test
-            @DisplayName("it throws IllegalArgumentException")
+            @DisplayName("IllegalArgumentException을 던진다")
             void it_throws_illegal_argument_exception() {
                 thenThrownBy(() -> new ConversationScript(ConversationType.CHAT_ASSISTANT, "   "))
                         .isInstanceOf(IllegalArgumentException.class)
@@ -56,11 +56,11 @@ class ConversationScriptTest {
         }
 
         @Nested
-        @DisplayName("when valid type and content are provided")
+        @DisplayName("유효한 타입과 콘텐츠가 주어졌을 때")
         class Context_with_valid_type_and_content {
 
             @Test
-            @DisplayName("it creates ConversationScript successfully")
+            @DisplayName("ConversationScript를 성공적으로 생성한다")
             void it_creates_conversation_script() {
                 // given
                 var type = ConversationType.CHAT_ASSISTANT;
@@ -76,15 +76,15 @@ class ConversationScriptTest {
     }
 
     @Nested
-    @DisplayName("render")
+    @DisplayName("렌더링")
     class Describe_render {
 
         @Nested
-        @DisplayName("when variables is null")
+        @DisplayName("변수가 null일 때")
         class Context_with_null_variables {
 
             @Test
-            @DisplayName("it returns original content")
+            @DisplayName("원본 콘텐츠를 반환한다")
             void it_returns_original_content() {
                 // given
                 var script =
@@ -101,11 +101,11 @@ class ConversationScriptTest {
         }
 
         @Nested
-        @DisplayName("when variables is empty")
+        @DisplayName("변수가 비어있을 때")
         class Context_with_empty_variables {
 
             @Test
-            @DisplayName("it returns original content")
+            @DisplayName("원본 콘텐츠를 반환한다")
             void it_returns_original_content() {
                 // given
                 var script =
@@ -122,11 +122,11 @@ class ConversationScriptTest {
         }
 
         @Nested
-        @DisplayName("when content has no variables")
+        @DisplayName("콘텐츠에 변수가 없을 때")
         class Context_with_no_variables_in_content {
 
             @Test
-            @DisplayName("it returns original content")
+            @DisplayName("원본 콘텐츠를 반환한다")
             void it_returns_original_content() {
                 // given
                 var script =
@@ -144,11 +144,11 @@ class ConversationScriptTest {
         }
 
         @Nested
-        @DisplayName("when content has single variable")
+        @DisplayName("콘텐츠에 단일 변수가 있을 때")
         class Context_with_single_variable {
 
             @Test
-            @DisplayName("it replaces variable with value")
+            @DisplayName("변수를 값으로 역치한다")
             void it_replaces_variable_with_value() {
                 // given
                 var script =
@@ -166,11 +166,11 @@ class ConversationScriptTest {
         }
 
         @Nested
-        @DisplayName("when content has multiple variables")
+        @DisplayName("콘텐츠에 복수 변수가 있을 때")
         class Context_with_multiple_variables {
 
             @Test
-            @DisplayName("it replaces all variables with values")
+            @DisplayName("모든 변수를 값으로 역치한다")
             void it_replaces_all_variables_with_values() {
                 // given
                 var script =
@@ -190,11 +190,11 @@ class ConversationScriptTest {
         }
 
         @Nested
-        @DisplayName("when variable appears multiple times")
+        @DisplayName("변수가 여러 번 나타날 때")
         class Context_with_repeated_variable {
 
             @Test
-            @DisplayName("it replaces all occurrences")
+            @DisplayName("모든 발생을 대체한다")
             void it_replaces_all_occurrences() {
                 // given
                 var script =
@@ -213,11 +213,11 @@ class ConversationScriptTest {
         }
 
         @Nested
-        @DisplayName("when variable is missing in map")
+        @DisplayName("맵에서 변수가 누락된 때")
         class Context_with_missing_variable_in_map {
 
             @Test
-            @DisplayName("it replaces with empty string")
+            @DisplayName("빈 문자열로 대체한다")
             void it_replaces_with_empty_string() {
                 // given
                 var script =

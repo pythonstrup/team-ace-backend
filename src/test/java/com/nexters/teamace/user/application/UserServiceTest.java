@@ -28,15 +28,15 @@ class UserServiceTest extends UseCaseIntegrationTest {
     }
 
     @Nested
-    @DisplayName("createUser")
+    @DisplayName("사용자 생성")
     class Describe_createUser {
 
         @Nested
-        @DisplayName("when valid username and nickname are provided")
+        @DisplayName("유효한 사용자명과 닉네임이 주어졌을 때")
         class Context_with_valid_username_and_nickname {
 
             @Test
-            @DisplayName("it returns user with generated id")
+            @DisplayName("생성된 ID를 가진 사용자를 반환한다")
             void it_returns_user_with_generated_id() {
                 final String username = generateUserString();
                 final String nickname = generateUserString();
@@ -53,11 +53,11 @@ class UserServiceTest extends UseCaseIntegrationTest {
         }
 
         @Nested
-        @DisplayName("when username is null")
+        @DisplayName("사용자명이 null일 때")
         class Context_with_null_username {
 
             @Test
-            @DisplayName("it returns user with null username")
+            @DisplayName("null 사용자명을 가진 사용자를 반환한다")
             void it_returns_user_with_null_username() {
                 final String nickname = generateUserString();
                 final CreateUserCommand command = new CreateUserCommand(null, nickname);
@@ -72,11 +72,11 @@ class UserServiceTest extends UseCaseIntegrationTest {
         }
 
         @Nested
-        @DisplayName("when username already exists")
+        @DisplayName("사용자명이 이미 존재할 때")
         class Context_when_username_already_exists {
 
             @Test
-            @DisplayName("it throws CustomException")
+            @DisplayName("CustomException을 던진다")
             void it_throws_CustomException() {
                 final String existingUsername = generateUserString();
                 final String existingNickname = generateUserString();
@@ -95,15 +95,15 @@ class UserServiceTest extends UseCaseIntegrationTest {
     }
 
     @Nested
-    @DisplayName("getUserByUsername")
+    @DisplayName("사용자명으로 사용자 조회")
     class Describe_getUserByUsername {
 
         @Nested
-        @DisplayName("when user exists")
+        @DisplayName("사용자가 존재할 때")
         class Context_when_user_exists {
 
             @Test
-            @DisplayName("it returns user")
+            @DisplayName("사용자를 반환한다")
             void it_returns_user() {
                 final String username = generateUserString();
                 final String nickname = generateUserString();
@@ -119,11 +119,11 @@ class UserServiceTest extends UseCaseIntegrationTest {
         }
 
         @Nested
-        @DisplayName("when user does not exist")
+        @DisplayName("사용자가 존재하지 않을 때")
         class Context_when_user_does_not_exist {
 
             @Test
-            @DisplayName("it throws CustomException")
+            @DisplayName("USER_NOT_FOUND 에러를 던진다")
             void it_throws_CustomException() {
                 thenThrownBy(() -> userService.getUserByUsername("nonexistent"))
                         .isInstanceOf(CustomException.class)
