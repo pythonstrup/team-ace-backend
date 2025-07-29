@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 class CreateUserCommandTest {
 
     @Nested
-    @DisplayName("when creating with valid username and nickname")
+    @DisplayName("유효한 사용자명과 닉네임으로 생성할 때")
     class Context_when_creating_with_valid_username_and_nickname {
 
         @Test
-        @DisplayName("it creates successfully")
+        @DisplayName("성공적으로 생성된다")
         void it_creates_successfully() {
             final CreateUserCommand command = new CreateUserCommand("validuser", "Valid User");
 
@@ -25,11 +25,11 @@ class CreateUserCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with null username and valid nickname")
+    @DisplayName("null 사용자명과 유효한 닉네임으로 생성할 때")
     class Context_when_creating_with_null_username_and_valid_nickname {
 
         @Test
-        @DisplayName("it creates successfully")
+        @DisplayName("성공적으로 생성된다")
         void it_creates_successfully() {
             final CreateUserCommand command = new CreateUserCommand(null, "Valid User");
 
@@ -39,11 +39,11 @@ class CreateUserCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with valid username and null nickname")
+    @DisplayName("유효한 사용자명과 null 닉네임으로 생성할 때")
     class Context_when_creating_with_valid_username_and_null_nickname {
 
         @Test
-        @DisplayName("it creates successfully")
+        @DisplayName("성공적으로 생성된다")
         void it_creates_successfully() {
             final CreateUserCommand command = new CreateUserCommand("validuser", null);
 
@@ -53,11 +53,11 @@ class CreateUserCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with blank username")
+    @DisplayName("빈 사용자명으로 생성할 때")
     class Context_when_creating_with_blank_username {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new CreateUserCommand("  ", "Valid User"))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -66,11 +66,11 @@ class CreateUserCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with username longer than 20 characters")
+    @DisplayName("20자보다 긴 사용자명으로 생성할 때")
     class Context_when_creating_with_username_longer_than_20_characters {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             final String longUsername = "a".repeat(21);
 
@@ -81,11 +81,11 @@ class CreateUserCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with blank nickname")
+    @DisplayName("빈 닉네임으로 생성할 때")
     class Context_when_creating_with_blank_nickname {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new CreateUserCommand("validuser", "  "))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -94,11 +94,11 @@ class CreateUserCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with nickname longer than 20 characters")
+    @DisplayName("20자보다 긴 닉네임으로 생성할 때")
     class Context_when_creating_with_nickname_longer_than_20_characters {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             final String longNickname = "a".repeat(21);
 
@@ -109,11 +109,11 @@ class CreateUserCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with empty username")
+    @DisplayName("빈 문자열 사용자명으로 생성할 때")
     class Context_when_creating_with_empty_username {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new CreateUserCommand("", "Valid User"))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -122,11 +122,11 @@ class CreateUserCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with empty nickname")
+    @DisplayName("빈 문자열 닉네임으로 생성할 때")
     class Context_when_creating_with_empty_nickname {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new CreateUserCommand("validuser", ""))
                     .isInstanceOf(IllegalArgumentException.class)

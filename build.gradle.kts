@@ -108,6 +108,9 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:mysql")
     testImplementation("org.testcontainers:junit-jupiter")
+
+    // rest-assured for E2E testing
+    testImplementation("io.rest-assured:rest-assured")
 }
 
 tasks {

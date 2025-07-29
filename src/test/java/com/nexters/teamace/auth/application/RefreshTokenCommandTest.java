@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 class RefreshTokenCommandTest {
 
     @Nested
-    @DisplayName("when creating with valid refresh token")
+    @DisplayName("유효한 리프레시 토큰으로 생성할 때")
     class Context_when_creating_with_valid_refresh_token {
 
         @Test
-        @DisplayName("it creates successfully")
+        @DisplayName("성공적으로 생성된다")
         void it_creates_successfully() {
             final String validToken =
                     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0In0.test";
@@ -26,11 +26,11 @@ class RefreshTokenCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with null refresh token")
+    @DisplayName("null 리프레시 토큰으로 생성할 때")
     class Context_when_creating_with_null_refresh_token {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new RefreshTokenCommand(null))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -39,11 +39,11 @@ class RefreshTokenCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with blank refresh token")
+    @DisplayName("빈 리프레시 토큰으로 생성할 때")
     class Context_when_creating_with_blank_refresh_token {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new RefreshTokenCommand("  "))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -52,11 +52,11 @@ class RefreshTokenCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with empty refresh token")
+    @DisplayName("빈 문자열 리프레시 토큰으로 생성할 때")
     class Context_when_creating_with_empty_refresh_token {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new RefreshTokenCommand(""))
                     .isInstanceOf(IllegalArgumentException.class)

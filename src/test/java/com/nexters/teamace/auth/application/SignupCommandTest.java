@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 class SignupCommandTest {
 
     @Nested
-    @DisplayName("when creating with valid username and nickname")
+    @DisplayName("유효한 사용자명과 닉네임으로 생성할 때")
     class Context_when_creating_with_valid_username_and_nickname {
 
         @Test
-        @DisplayName("it creates successfully")
+        @DisplayName("성공적으로 생성된다")
         void it_creates_successfully() {
             final SignupCommand command = new SignupCommand("validuser", "Valid User");
 
@@ -25,11 +25,11 @@ class SignupCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with null username")
+    @DisplayName("null 사용자명으로 생성할 때")
     class Context_when_creating_with_null_username {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new SignupCommand(null, "Valid User"))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -38,11 +38,11 @@ class SignupCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with blank username")
+    @DisplayName("빈 사용자명으로 생성할 때")
     class Context_when_creating_with_blank_username {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new SignupCommand("  ", "Valid User"))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -51,11 +51,11 @@ class SignupCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with username longer than 20 characters")
+    @DisplayName("20자보다 긴 사용자명으로 생성할 때")
     class Context_when_creating_with_username_longer_than_20_characters {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             final String longUsername = "a".repeat(21);
 
@@ -66,11 +66,11 @@ class SignupCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with null nickname")
+    @DisplayName("null 닉네임으로 생성할 때")
     class Context_when_creating_with_null_nickname {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new SignupCommand("validuser", null))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -79,11 +79,11 @@ class SignupCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with blank nickname")
+    @DisplayName("빈 닉네임으로 생성할 때")
     class Context_when_creating_with_blank_nickname {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new SignupCommand("validuser", "  "))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -92,11 +92,11 @@ class SignupCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with nickname longer than 20 characters")
+    @DisplayName("20자보다 긴 닉네임으로 생성할 때")
     class Context_when_creating_with_nickname_longer_than_20_characters {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             final String longNickname = "a".repeat(21);
 

@@ -28,15 +28,15 @@ class AuthServiceTest extends UseCaseIntegrationTest {
     }
 
     @Nested
-    @DisplayName("login")
+    @DisplayName("로그인")
     class Describe_login {
 
         @Nested
-        @DisplayName("when existing user")
+        @DisplayName("기존 사용자일 때")
         class Context_when_existing_user {
 
             @Test
-            @DisplayName("it returns login result with tokens")
+            @DisplayName("토큰과 함께 로그인 결과를 반환한다")
             void it_returns_login_result_with_tokens() {
                 // 2025년 1월 1일 00:00:00 UTC
                 given(systemHolder.currentTimeMillis()).willReturn(1735689600000L);
@@ -75,11 +75,11 @@ class AuthServiceTest extends UseCaseIntegrationTest {
         }
 
         @Nested
-        @DisplayName("when non-existing user")
+        @DisplayName("존재하지 않는 사용자일 때")
         class Context_when_non_existing_user {
 
             @Test
-            @DisplayName("it throws CustomException")
+            @DisplayName("USER_NOT_FOUND 에러를 던진다")
             void it_throws_CustomException() {
                 final LoginCommand command = new LoginCommand("nonexistent");
 
@@ -92,15 +92,15 @@ class AuthServiceTest extends UseCaseIntegrationTest {
     }
 
     @Nested
-    @DisplayName("signup")
+    @DisplayName("회원가입")
     class Describe_signup {
 
         @Nested
-        @DisplayName("when valid username and nickname")
+        @DisplayName("유효한 사용자명과 닉네임일 때")
         class Context_when_valid_username_and_nickname {
 
             @Test
-            @DisplayName("it returns signup result with tokens")
+            @DisplayName("토큰과 함께 회원가입 결과를 반환한다")
             void it_returns_signup_result_with_tokens() {
                 // 2025년 1월 1일 00:00:00 UTC
                 given(systemHolder.currentTimeMillis()).willReturn(1735689600000L);
@@ -126,11 +126,11 @@ class AuthServiceTest extends UseCaseIntegrationTest {
         }
 
         @Nested
-        @DisplayName("when username already exists")
+        @DisplayName("사용자명이 이미 존재할 때")
         class Context_when_username_already_exists {
 
             @Test
-            @DisplayName("it throws CustomException")
+            @DisplayName("USER_ALREADY_EXISTS 에러를 던진다")
             void it_throws_CustomException() {
                 final String existingUsername = generateUserString();
                 final String existingNickname = generateUserString();
@@ -148,15 +148,15 @@ class AuthServiceTest extends UseCaseIntegrationTest {
     }
 
     @Nested
-    @DisplayName("refreshToken")
+    @DisplayName("토큰 갱신")
     class Describe_refreshToken {
 
         @Nested
-        @DisplayName("when valid refresh token")
+        @DisplayName("유효한 리프레시 토큰일 때")
         class Context_when_valid_refresh_token {
 
             @Test
-            @DisplayName("it returns new access token")
+            @DisplayName("새로운 액세스 토큰을 반환한다")
             void it_returns_new_access_token() {
                 // 현재 시간을 사용하여 유효한 토큰 생성
                 final long currentTime = System.currentTimeMillis();
@@ -180,11 +180,11 @@ class AuthServiceTest extends UseCaseIntegrationTest {
         }
 
         @Nested
-        @DisplayName("when invalid refresh token")
+        @DisplayName("유효하지 않은 리프레시 토큰일 때")
         class Context_when_invalid_refresh_token {
 
             @Test
-            @DisplayName("it throws CustomException")
+            @DisplayName("INVALID_REFRESH_TOKEN 에러를 던진다")
             void it_throws_CustomException() {
                 final RefreshTokenCommand command = new RefreshTokenCommand("invalid-token");
 

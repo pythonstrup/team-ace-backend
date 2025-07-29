@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 class LoginCommandTest {
 
     @Nested
-    @DisplayName("when creating with valid username")
+    @DisplayName("유효한 사용자명으로 생성할 때")
     class Context_when_creating_with_valid_username {
 
         @Test
-        @DisplayName("it creates successfully")
+        @DisplayName("성공적으로 생성된다")
         void it_creates_successfully() {
             final LoginCommand command = new LoginCommand("validuser");
 
@@ -24,11 +24,11 @@ class LoginCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with null username")
+    @DisplayName("null 사용자명으로 생성할 때")
     class Context_when_creating_with_null_username {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new LoginCommand(null))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -37,11 +37,11 @@ class LoginCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with blank username")
+    @DisplayName("빈 사용자명으로 생성할 때")
     class Context_when_creating_with_blank_username {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             thenThrownBy(() -> new LoginCommand("  "))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -50,11 +50,11 @@ class LoginCommandTest {
     }
 
     @Nested
-    @DisplayName("when creating with username longer than 20 characters")
+    @DisplayName("20자보다 긴 사용자명으로 생성할 때")
     class Context_when_creating_with_username_longer_than_20_characters {
 
         @Test
-        @DisplayName("it throws IllegalArgumentException")
+        @DisplayName("IllegalArgumentException을 던진다")
         void it_throws_IllegalArgumentException() {
             final String longUsername = "a".repeat(21);
 
