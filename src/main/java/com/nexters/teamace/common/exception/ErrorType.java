@@ -25,6 +25,7 @@ public enum ErrorType {
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Resource not found"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "User not found"),
     ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Entity not found"),
+    CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "Chat room not found"),
 
     /** 409 CONFLICT */
     USER_ALREADY_EXISTS(HttpStatus.CONFLICT, ErrorCode.E409, "User already exists"),

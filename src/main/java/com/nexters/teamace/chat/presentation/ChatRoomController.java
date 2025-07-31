@@ -1,8 +1,8 @@
 package com.nexters.teamace.chat.presentation;
 
 import com.nexters.teamace.chat.application.ChatRoomCommand;
-import com.nexters.teamace.chat.application.ChatRoomResult;
 import com.nexters.teamace.chat.application.ChatRoomService;
+import com.nexters.teamace.chat.application.CreateChatRoomResult;
 import com.nexters.teamace.chat.application.SendMessageCommand;
 import com.nexters.teamace.chat.application.SendMessageResult;
 import com.nexters.teamace.common.presentation.ApiResponse;
@@ -25,7 +25,7 @@ public class ChatRoomController {
     public ApiResponse<ChatRoomResponse> createChatRoom(
             @RequestBody @Valid final ChatRoomRequest request) {
         final ChatRoomCommand command = new ChatRoomCommand(request.username());
-        final ChatRoomResult chatRoom = chatRoomService.createChat(command);
+        final CreateChatRoomResult chatRoom = chatRoomService.createChat(command);
         return ApiResponse.success(
                 new ChatRoomResponse(chatRoom.chatRoomId(), chatRoom.firstChat()));
     }

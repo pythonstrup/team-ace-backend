@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.nexters.teamace.chat.application.ChatRoomCommand;
-import com.nexters.teamace.chat.application.ChatRoomResult;
+import com.nexters.teamace.chat.application.CreateChatRoomResult;
 import com.nexters.teamace.chat.application.SendMessageCommand;
 import com.nexters.teamace.chat.application.SendMessageResult;
 import com.nexters.teamace.common.annotation.WithMockCustomUser;
@@ -38,7 +38,7 @@ class ChatRoomControllerTest extends ControllerTest {
         final ChatRoomRequest request = new ChatRoomRequest("user123");
         final String requestBody = objectMapper.writeValueAsString(request);
 
-        final ChatRoomResult chatRoom = new ChatRoomResult(1L, "첫번째 채팅");
+        final CreateChatRoomResult chatRoom = new CreateChatRoomResult(1L, "첫번째 채팅");
         given(chatRoomService.createChat(any(ChatRoomCommand.class))).willReturn(chatRoom);
 
         final ChatRoomResponse response = new ChatRoomResponse(1L, "첫번째 채팅");

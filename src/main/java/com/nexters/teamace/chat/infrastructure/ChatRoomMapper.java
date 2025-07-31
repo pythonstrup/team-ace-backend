@@ -2,15 +2,17 @@ package com.nexters.teamace.chat.infrastructure;
 
 import com.nexters.teamace.chat.domain.Chat;
 import com.nexters.teamace.chat.domain.ChatRoom;
+import com.nexters.teamace.chat.domain.Chats;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
 class ChatRoomMapper {
 
     public ChatRoom toDomain(final ChatRoomEntity entity) {
-        final ChatRoom chatRoom = ChatRoom.restore(entity.getId(), entity.getUserId());
-        entity.getChats().forEach(chatEntity -> chatRoom.addChat(toChatDomain(chatEntity)));
-        return chatRoom;
+        final List<Chat> chatList = entity.getChats().stream().map(this::toChatDomain).toList();
+        final Chats chats = new Chats(chatList);
+        return ChatRoom.restore(entity.getId(), entity.getUserId(), chats);
     }
 
     public ChatRoomEntity toEntity(final ChatRoom domain) {
