@@ -10,7 +10,7 @@ public class Chats {
 
     private final List<Chat> chats;
 
-    public Chats() {
+    Chats() {
         this.chats = new ArrayList<>();
     }
 
