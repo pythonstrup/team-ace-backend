@@ -4,6 +4,7 @@ import com.nexters.teamace.chat.domain.ChatContext;
 import com.nexters.teamace.chat.domain.ChatMessageGenerator;
 import com.nexters.teamace.chat.domain.ChatRoom;
 import com.nexters.teamace.chat.domain.ChatRoomRepository;
+import com.nexters.teamace.common.infrastructure.annotation.ReadOnlyTransactional;
 import com.nexters.teamace.user.application.GetUserResult;
 import com.nexters.teamace.user.application.UserService;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,18 @@ public class ChatRoomService {
         chatRoomRepository.save(chatRoom);
 
         return new SendMessageResult(responseMessage);
+    }
+
+    @ReadOnlyTransactional
+    public AllChatResult getAllChats(final AllChatQuery query) {
+        final ChatRoom chatRoom = chatRoomRepository.getById(query.chatRoomId());
+        return new AllChatResult(
+                chatRoom.getId(),
+                chatRoom.getChats().stream()
+                        .map(
+                                chat ->
+                                        new AllChatResult.ChatResult(
+                                                chat.getId(), chat.getType(), chat.getMessage()))
+                        .toList());
     }
 }
