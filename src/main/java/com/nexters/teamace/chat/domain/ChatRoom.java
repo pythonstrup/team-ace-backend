@@ -26,4 +26,14 @@ public class ChatRoom {
     public void addChat(final Chat chat) {
         this.chats.add(chat);
     }
+
+    public void addSystemMessage(final String message) {
+        final Chat systemChat = Chat.of(this.id, MessageType.SYSTEM, message);
+        this.chats.add(systemChat);
+    }
+
+    public void addUserMessage(final String message) {
+        final Chat userChat = Chat.of(this.id, MessageType.USER, message);
+        this.chats.add(userChat);
+    }
 }
