@@ -2,6 +2,7 @@ package com.nexters.teamace.chat.infrastructure;
 
 import com.nexters.teamace.chat.domain.ChatContext;
 import com.nexters.teamace.chat.domain.ChatMessageGenerator;
+import com.nexters.teamace.common.exception.ValidationErrorMessage;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.stereotype.Component;
@@ -41,10 +42,7 @@ class RandomChatMessageGenerator implements ChatMessageGenerator {
     @Override
     public String generateResponseMessage(final String userMessage, final ChatContext context) {
         if (context == null) {
-            throw new IllegalArgumentException("ChatContext cannot be null");
-        }
-        if (context.previousChats() == null) {
-            throw new IllegalArgumentException("Previous chats cannot be null");
+            throw new IllegalArgumentException(ValidationErrorMessage.CHAT_CONTEXT_NOT_NULL);
         }
 
         final int conversationCount = context.previousChats().size();
