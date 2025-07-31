@@ -49,7 +49,7 @@ class ChatRoomServiceTest extends UseCaseIntegrationTest {
                 final ChatRoomCommand command = new ChatRoomCommand(username);
 
                 // When
-                final ChatRoomResult result = chatRoomService.createChat(command);
+                final CreateChatRoomResult result = chatRoomService.createChat(command);
 
                 // Then
                 then(result.chatRoomId()).isNotNull();

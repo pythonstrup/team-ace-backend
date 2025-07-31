@@ -19,7 +19,7 @@ public class Chat {
         this.message = message;
     }
 
-    public static Chat of(final Long chatRoomId, final MessageType type, final String message) {
+    public static Chat create(final Long chatRoomId, final MessageType type, final String message) {
         return new Chat(null, chatRoomId, type, message);
     }
 

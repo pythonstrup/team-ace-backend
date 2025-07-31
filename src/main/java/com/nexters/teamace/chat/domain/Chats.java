@@ -12,7 +12,7 @@ public class Chats implements Iterable<Chat> {
 
     private final List<Chat> chats;
 
-    Chats() {
+    public Chats() {
         this.chats = new ArrayList<>();
     }
 
