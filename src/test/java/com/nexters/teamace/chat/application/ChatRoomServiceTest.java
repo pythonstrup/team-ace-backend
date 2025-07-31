@@ -35,11 +35,11 @@ class ChatRoomServiceTest extends UseCaseIntegrationTest {
     class Describe_createChat {
 
         @Nested
-        @DisplayName("when valid username is provided")
+        @DisplayName("유효한 username이 제공되었을 때")
         class Context_with_valid_username {
 
             @Test
-            @DisplayName("it creates chatroom with random first message")
+            @DisplayName("랜덤한 첫 메시지와 함께 채팅방을 생성한다")
             void it_creates_chatroom_with_random_first_message() {
                 // Given
                 final String username = generateUserString();
@@ -68,11 +68,11 @@ class ChatRoomServiceTest extends UseCaseIntegrationTest {
         }
 
         @Nested
-        @DisplayName("when username does not exist")
+        @DisplayName("존재하지 않는 username일 때")
         class Context_with_nonexistent_username {
 
             @Test
-            @DisplayName("it throws USER_NOT_FOUND error")
+            @DisplayName("USER_NOT_FOUND 에러를 던진다")
             void it_throws_user_not_found_error() {
                 // Given
                 final String nonExistentUsername = "nonexistent";
