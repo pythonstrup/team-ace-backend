@@ -1,12 +1,14 @@
 package com.nexters.teamace.chat.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-public class Chats {
+public class Chats implements Iterable<Chat> {
 
     private final List<Chat> chats;
 
@@ -22,8 +24,13 @@ public class Chats {
         this.chats.add(chat);
     }
 
-    public List<Chat> getChats() {
-        return Collections.unmodifiableList(chats);
+    @Override
+    public Iterator<Chat> iterator() {
+        return chats.iterator();
+    }
+
+    public Stream<Chat> stream() {
+        return StreamSupport.stream(spliterator(), false);
     }
 
     public int size() {

@@ -15,7 +15,7 @@ class ChatRoomMapper {
 
     public ChatRoomEntity toEntity(final ChatRoom domain) {
         final ChatRoomEntity entity = new ChatRoomEntity(domain.getId(), domain.getUserId());
-        domain.getChats().getChats().stream().map(this::toChatEntity).forEach(entity::addChat);
+        domain.getChats().stream().map(this::toChatEntity).forEach(entity::addChat);
         return entity;
     }
 
