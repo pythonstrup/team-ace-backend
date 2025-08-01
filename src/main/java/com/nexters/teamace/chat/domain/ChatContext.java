@@ -4,9 +4,7 @@ import static com.nexters.teamace.common.exception.ValidationErrorMessage.CHAT_R
 import static com.nexters.teamace.common.exception.ValidationErrorMessage.CHAT_ROOM_ID_POSITIVE;
 import static com.nexters.teamace.common.exception.ValidationErrorMessage.PREVIOUS_CHATS_NOT_NULL;
 
-import java.util.List;
-
-public record ChatContext(Long chatRoomId, List<Chat> previousChats) {
+public record ChatContext(Long chatRoomId, Chats previousChats) {
     public ChatContext {
         if (chatRoomId == null) {
             throw new IllegalArgumentException(CHAT_ROOM_ID_NOT_NULL);

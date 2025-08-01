@@ -48,7 +48,7 @@ class ChatsTest {
                 // Then
                 then(chats.size()).isEqualTo(2);
                 then(chats.isEmpty()).isFalse();
-                then(chats.getChats()).containsExactly(chat1, chat2);
+                then(chats).containsExactly(chat1, chat2);
             }
         }
 
@@ -96,27 +96,6 @@ class ChatsTest {
                 then(chats.getFirst()).isEqualTo(existingChat);
                 then(chats.getLast()).isEqualTo(newChat);
             }
-        }
-    }
-
-    @Nested
-    @DisplayName("채팅 목록 조회")
-    class Describe_getChats {
-
-        @Test
-        @DisplayName("수정 불가능한 채팅 목록을 반환한다")
-        void it_returns_unmodifiable_chat_list() {
-            // Given
-            final Chat chat = Chat.create(1L, MessageType.USER, "Hello");
-            final Chats chats = new Chats(List.of(chat));
-
-            // When
-            final List<Chat> result = chats.getChats();
-
-            // Then
-            then(result).containsExactly(chat);
-            thenThrownBy(() -> result.add(Chat.create(2L, MessageType.SYSTEM, "Test")))
-                    .isInstanceOf(UnsupportedOperationException.class);
         }
     }
 
