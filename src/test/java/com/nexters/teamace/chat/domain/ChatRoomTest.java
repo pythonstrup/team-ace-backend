@@ -143,7 +143,7 @@ class ChatRoomTest {
 
                 // Then
                 then(chatContext).extracting("chatRoomId").isEqualTo(chatRoom.getId());
-                then(chatContext.previousChats()).hasSize(2);
+                then(chatContext.previousChats().size()).isEqualTo(2);
                 then(chatContext.previousChats())
                         .extracting("type", "message")
                         .containsExactly(

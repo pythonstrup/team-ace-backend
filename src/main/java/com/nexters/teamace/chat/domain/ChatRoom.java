@@ -39,6 +39,6 @@ public class ChatRoom {
             throw new IllegalStateException(
                     "ChatRoom ID must not be null when creating ChatContext");
         }
-        return new ChatContext(this.id, this.chats.getChats());
+        return new ChatContext(this.id, this.chats);
     }
 }

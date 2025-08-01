@@ -27,7 +27,7 @@ class ChatContextTest {
             void it_creates_chat_context() {
                 // Given
                 final Long chatRoomId = 1L;
-                final List<Chat> previousChats = List.of();
+                final Chats previousChats = new Chats();
 
                 // When
                 final ChatContext chatContext = new ChatContext(chatRoomId, previousChats);
@@ -50,7 +50,7 @@ class ChatContextTest {
                 final Long chatRoomId = 5L;
                 final Chat chat1 = Chat.create(chatRoomId, MessageType.USER, "Hello");
                 final Chat chat2 = Chat.create(chatRoomId, MessageType.SYSTEM, "Hi there");
-                final List<Chat> previousChats = List.of(chat1, chat2);
+                final Chats previousChats = new Chats(List.of(chat1, chat2));
 
                 // When
                 final ChatContext chatContext = new ChatContext(chatRoomId, previousChats);
@@ -58,7 +58,7 @@ class ChatContextTest {
                 // Then
                 then(chatContext.chatRoomId()).isEqualTo(chatRoomId);
                 then(chatContext.previousChats()).isEqualTo(previousChats);
-                then(chatContext.previousChats()).hasSize(2);
+                then(chatContext.previousChats().size()).isEqualTo(2);
             }
         }
     }
@@ -76,7 +76,7 @@ class ChatContextTest {
             void it_throws_IllegalArgumentException() {
                 // Given
                 final Long chatRoomId = null;
-                final List<Chat> previousChats = List.of();
+                final Chats previousChats = new Chats();
 
                 // When & Then
                 thenThrownBy(() -> new ChatContext(chatRoomId, previousChats))
@@ -94,7 +94,7 @@ class ChatContextTest {
             void it_throws_IllegalArgumentException() {
                 // Given
                 final Long chatRoomId = 0L;
-                final List<Chat> previousChats = List.of();
+                final Chats previousChats = new Chats();
 
                 // When & Then
                 thenThrownBy(() -> new ChatContext(chatRoomId, previousChats))
@@ -112,7 +112,7 @@ class ChatContextTest {
             void it_throws_IllegalArgumentException() {
                 // Given
                 final Long chatRoomId = -1L;
-                final List<Chat> previousChats = List.of();
+                final Chats previousChats = new Chats();
 
                 // When & Then
                 thenThrownBy(() -> new ChatContext(chatRoomId, previousChats))
@@ -130,7 +130,7 @@ class ChatContextTest {
             void it_creates_chat_context() {
                 // Given
                 final Long chatRoomId = 1L;
-                final List<Chat> previousChats = List.of();
+                final Chats previousChats = new Chats();
 
                 // When
                 final ChatContext chatContext = new ChatContext(chatRoomId, previousChats);
@@ -154,7 +154,7 @@ class ChatContextTest {
             void it_throws_IllegalArgumentException() {
                 // Given
                 final Long chatRoomId = 1L;
-                final List<Chat> previousChats = null;
+                final Chats previousChats = null;
 
                 // When & Then
                 thenThrownBy(() -> new ChatContext(chatRoomId, previousChats))
