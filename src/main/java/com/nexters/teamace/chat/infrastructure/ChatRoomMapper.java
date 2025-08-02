@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 class ChatRoomMapper {
-
     public ChatRoom toDomain(final ChatRoomEntity entity) {
         final List<Chat> chatList = entity.getChats().stream().map(this::toChatDomain).toList();
         final Chats chats = new Chats(chatList);

@@ -14,6 +14,7 @@ import com.nexters.teamace.common.presentation.GlobalExceptionHandler;
 import com.nexters.teamace.conversation.application.ConversationClient;
 import com.nexters.teamace.conversation.application.ConversationService;
 import com.nexters.teamace.fairy.application.FairyService;
+import com.nexters.teamace.letter.application.LetterService;
 import com.nexters.teamace.user.application.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -43,6 +44,7 @@ public abstract class ControllerTest {
     @MockitoBean protected ConversationClient conversationClient;
     @MockitoBean protected FairyService fairyService;
     @MockitoBean protected AuthUserArgumentResolver authUserArgumentResolver;
+    @MockitoBean protected LetterService letterService;
 
     protected Object asParsedJson(Object obj) throws JsonProcessingException {
         String json = objectMapper.writeValueAsString(obj);
