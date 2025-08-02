@@ -9,5 +9,7 @@ CREATE TABLE letters
     created_id   VARCHAR(255)                        NOT NULL,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
     updated_id   VARCHAR(255)                        NOT NULL,
-    deleted_at   TIMESTAMP NULL
+    deleted_at   TIMESTAMP NULL,
+    FOREIGN KEY (chat_room_id) REFERENCES chat_rooms (id),
+    FOREIGN KEY (fairy_id) REFERENCES fairies (id)
 );
