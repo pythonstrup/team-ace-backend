@@ -127,7 +127,7 @@ class AuthControllerTest extends ControllerTest {
                                 resource(
                                         ResourceSnippetParameters.builder()
                                                 .tag("Auth")
-                                                .description("로그인 - username 검증 실패")
+                                                .description("로그인")
                                                 .requestFields(
                                                         fieldWithPath("username")
                                                                 .type(JsonFieldType.STRING)
@@ -262,7 +262,7 @@ class AuthControllerTest extends ControllerTest {
                                 resource(
                                         ResourceSnippetParameters.builder()
                                                 .tag("Auth")
-                                                .description("회원가입 - username 검증 실패")
+                                                .description("회원가입")
                                                 .requestFields(
                                                         fieldWithPath("username")
                                                                 .type(JsonFieldType.STRING)
@@ -390,7 +390,7 @@ class AuthControllerTest extends ControllerTest {
                                 resource(
                                         ResourceSnippetParameters.builder()
                                                 .tag("Auth")
-                                                .description("토큰 리프레시 - refreshToken 검증 실패")
+                                                .description("토큰 리프레시")
                                                 .requestFields(
                                                         fieldWithPath("refreshToken")
                                                                 .type(JsonFieldType.STRING)
