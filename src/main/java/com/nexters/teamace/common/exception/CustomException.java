@@ -17,6 +17,8 @@ public class CustomException extends RuntimeException {
 
     public static final CustomException PROMPT_TEMPLATE_NOT_FOUND =
             new CustomException(ErrorType.PROMPT_TEMPLATE_NOT_FOUND);
+    public static final CustomException FAIRY_NOT_FOUND =
+            new CustomException(ErrorType.FAIRY_NOT_FOUND);
 
     @Getter private final ErrorType errorType;
     @Getter private final Object data;
