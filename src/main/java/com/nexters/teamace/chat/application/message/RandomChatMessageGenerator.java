@@ -1,13 +1,15 @@
-package com.nexters.teamace.chat.infrastructure;
+package com.nexters.teamace.chat.application.message;
 
 import com.nexters.teamace.chat.domain.ChatContext;
 import com.nexters.teamace.chat.domain.ChatMessageGenerator;
+import com.nexters.teamace.common.application.RandomHolder;
 import com.nexters.teamace.common.exception.ValidationErrorMessage;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 class RandomChatMessageGenerator implements ChatMessageGenerator {
 
     private static final List<String> FIRST_MESSAGES =
@@ -34,9 +36,11 @@ class RandomChatMessageGenerator implements ChatMessageGenerator {
                     "감정이 말로 표현된다면, 뭐라고 말할까요?",
                     "그 감정을 요정처럼 상상한다면 어떤 모습일까요?");
 
+    private final RandomHolder randomHolder;
+
     @Override
     public String generateFirstMessage() {
-        return FIRST_MESSAGES.get(ThreadLocalRandom.current().nextInt(FIRST_MESSAGES.size()));
+        return FIRST_MESSAGES.get(randomHolder.nextInt(FIRST_MESSAGES.size()));
     }
 
     @Override
@@ -51,6 +55,6 @@ class RandomChatMessageGenerator implements ChatMessageGenerator {
                 (conversationCount <= secondStageCount)
                         ? SECOND_STAGE_MESSAGES
                         : THIRD_STAGE_MESSAGES;
-        return messages.get(ThreadLocalRandom.current().nextInt(messages.size()));
+        return messages.get(randomHolder.nextInt(messages.size()));
     }
 }
