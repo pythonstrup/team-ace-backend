@@ -3,9 +3,10 @@ package com.nexters.teamace.conversation.application;
 import static org.assertj.core.api.BDDAssertions.then;
 
 import com.nexters.teamace.common.utils.UseCaseIntegrationTest;
+import com.nexters.teamace.conversation.domain.ConversationContextType;
 import com.nexters.teamace.conversation.domain.ConversationScript;
 import com.nexters.teamace.conversation.domain.ConversationType;
-import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -70,21 +71,25 @@ class ConversationScriptServiceTest extends UseCaseIntegrationTest {
             @DisplayName("변수가 대체된 템플릿을 렌더링한다")
             void it_renders_template_with_variables_replaced() {
                 // given
-                String sessionKey = "test-session";
-                List<String> previousMessages = List.of("이전 메시지 1", "이전 메시지 2");
-                ConversationContext context = new ConversationContext(sessionKey, previousMessages);
-                String userMessage = "안녕하세요";
+                String previousConversations = "이전 메시지 1\n이전 메시지 2";
+                Map<ConversationContextType, String> variables =
+                        Map.of(
+                                ConversationContextType.PREVIOUS_CONVERSATIONS,
+                                previousConversations,
+                                ConversationContextType.CONVERSATION_STAGE,
+                                "1단계(감정인식)");
 
                 // when
-                String renderedScript =
-                        conversationScriptService.renderScript(
-                                ConversationType.CHAT_ASSISTANT, context, userMessage);
+                ConversationScript script =
+                        conversationScriptService.getPromptTemplate(
+                                ConversationType.CHAT_ASSISTANT);
+                String renderedScript = script.render(variables);
 
                 // then
                 then(renderedScript)
                         .isNotNull()
-                        .contains(userMessage, "이전 메시지 1\n이전 메시지 2")
-                        .doesNotContain("{{MESSAGE}}", "{{PREVIOUS_CONVERSATIONS}}");
+                        .contains(previousConversations)
+                        .doesNotContain("{{PREVIOUS_CONVERSATIONS}}", "{{CONVERSATION_STAGE}}");
             }
         }
     }

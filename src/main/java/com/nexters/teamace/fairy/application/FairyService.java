@@ -5,6 +5,7 @@ import com.nexters.teamace.common.infrastructure.annotation.ReadOnlyTransactiona
 import com.nexters.teamace.common.presentation.UserInfo;
 import com.nexters.teamace.conversation.application.ConversationContext;
 import com.nexters.teamace.conversation.application.ConversationService;
+import com.nexters.teamace.conversation.domain.ConversationContextType;
 import com.nexters.teamace.conversation.domain.ConversationType;
 import com.nexters.teamace.conversation.domain.EmotionSelectConversation;
 import com.nexters.teamace.fairy.application.dto.FairyInfo;
@@ -16,6 +17,7 @@ import com.nexters.teamace.fairy.infrastructure.AcquiredFairyEntity;
 import com.nexters.teamace.fairy.infrastructure.AcquiredFairyJpaRepository;
 import com.nexters.teamace.fairy.infrastructure.dto.FairyProjection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -40,12 +42,17 @@ public class FairyService {
          * 4. ...
          * */
         ConversationType type = ConversationType.EMOTION_ANALYSIS;
-        ConversationContext context = new ConversationContext("질의응답", List.of());
+
+        Map<ConversationContextType, String> variables =
+                Map.of(
+                        ConversationContextType.PREVIOUS_CONVERSATIONS,
+                        "" // This should be populated from chat room history
+                        );
+        ConversationContext context = new ConversationContext("질의응답", variables);
 
         // 2. 질의응답 기반으로 ai call 해서 감정 후보 획득
         EmotionSelectConversation emotionSelectConversation =
-                (EmotionSelectConversation)
-                        conversationService.chat(type.getType(), type, context, "");
+                (EmotionSelectConversation) conversationService.chat(type.getType(), type, context);
 
         // 3. 감정 후보 기반으로 fairy 후보 조회
         List<FairyProjection> fairyProjections =

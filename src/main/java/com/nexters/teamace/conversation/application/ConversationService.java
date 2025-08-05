@@ -1,9 +1,13 @@
 package com.nexters.teamace.conversation.application;
 
+import com.nexters.teamace.conversation.domain.ConversationScript;
 import com.nexters.teamace.conversation.domain.ConversationType;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConversationService {
@@ -14,10 +18,23 @@ public class ConversationService {
     public <T> T chat(
             final Class<T> type,
             final ConversationType conversationType,
+            final ConversationContext context) {
+        // No userMessage for cases like EMOTION_ANALYSIS
+        return chat(type, conversationType, context, null);
+    }
+
+    public <T> T chat(
+            final Class<T> type,
+            final ConversationType conversationType,
             final ConversationContext context,
-            final String message) {
-        final String script =
-                conversationScriptService.renderScript(conversationType, context, message);
-        return conversationClient.chat(type, script, message);
+            final String userMessage) {
+        final ConversationScript script =
+                conversationScriptService.getPromptTemplate(conversationType);
+
+        script.validateVariables(context.variables());
+        final String renderedScript = script.render(context.variables());
+
+        return conversationClient.chat(
+                type, renderedScript, Objects.isNull(userMessage) ? "" : userMessage);
     }
 }

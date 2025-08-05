@@ -80,48 +80,6 @@ class ConversationScriptTest {
     class Describe_render {
 
         @Nested
-        @DisplayName("변수가 null일 때")
-        class Context_with_null_variables {
-
-            @Test
-            @DisplayName("원본 콘텐츠를 반환한다")
-            void it_returns_original_content() {
-                // given
-                var script =
-                        new ConversationScript(
-                                ConversationType.CHAT_ASSISTANT,
-                                "Hello {{MESSAGE}}, this is {{PREVIOUS_CONVERSATIONS}}");
-
-                // when
-                String result = script.render(null);
-
-                // then
-                then(result).isEqualTo("Hello {{MESSAGE}}, this is {{PREVIOUS_CONVERSATIONS}}");
-            }
-        }
-
-        @Nested
-        @DisplayName("변수가 비어있을 때")
-        class Context_with_empty_variables {
-
-            @Test
-            @DisplayName("원본 콘텐츠를 반환한다")
-            void it_returns_original_content() {
-                // given
-                var script =
-                        new ConversationScript(
-                                ConversationType.CHAT_ASSISTANT, "Template with {{MESSAGE}}");
-                Map<ConversationContextType, String> emptyVariables = new HashMap<>();
-
-                // when
-                String result = script.render(emptyVariables);
-
-                // then
-                then(result).isEqualTo("Template with {{MESSAGE}}");
-            }
-        }
-
-        @Nested
         @DisplayName("콘텐츠에 변수가 없을 때")
         class Context_with_no_variables_in_content {
 
@@ -133,7 +91,7 @@ class ConversationScriptTest {
                         new ConversationScript(
                                 ConversationType.CHAT_ASSISTANT, "Plain text content");
                 Map<ConversationContextType, String> variables = new HashMap<>();
-                variables.put(ConversationContextType.MESSAGE, "Hello");
+                variables.put(ConversationContextType.PREVIOUS_CONVERSATIONS, "Previous");
 
                 // when
                 String result = script.render(variables);
@@ -153,15 +111,15 @@ class ConversationScriptTest {
                 // given
                 var script =
                         new ConversationScript(
-                                ConversationType.CHAT_ASSISTANT, "User message: {{MESSAGE}}");
+                                ConversationType.CHAT_ASSISTANT, "Stage: {{CONVERSATION_STAGE}}");
                 Map<ConversationContextType, String> variables = new HashMap<>();
-                variables.put(ConversationContextType.MESSAGE, "Hello World");
+                variables.put(ConversationContextType.CONVERSATION_STAGE, "1단계");
 
                 // when
                 String result = script.render(variables);
 
                 // then
-                then(result).isEqualTo("User message: Hello World");
+                then(result).isEqualTo("Stage: 1단계");
             }
         }
 
@@ -176,16 +134,16 @@ class ConversationScriptTest {
                 var script =
                         new ConversationScript(
                                 ConversationType.CHAT_ASSISTANT,
-                                "Previous: {{PREVIOUS_CONVERSATIONS}}, Current: {{MESSAGE}}");
+                                "Previous: {{PREVIOUS_CONVERSATIONS}}, Stage: {{CONVERSATION_STAGE}}");
                 Map<ConversationContextType, String> variables = new HashMap<>();
                 variables.put(ConversationContextType.PREVIOUS_CONVERSATIONS, "History");
-                variables.put(ConversationContextType.MESSAGE, "New message");
+                variables.put(ConversationContextType.CONVERSATION_STAGE, "1단계");
 
                 // when
                 String result = script.render(variables);
 
                 // then
-                then(result).isEqualTo("Previous: History, Current: New message");
+                then(result).isEqualTo("Previous: History, Stage: 1단계");
             }
         }
 
@@ -200,15 +158,15 @@ class ConversationScriptTest {
                 var script =
                         new ConversationScript(
                                 ConversationType.CHAT_ASSISTANT,
-                                "First: {{MESSAGE}}, Second: {{MESSAGE}}, Third: {{MESSAGE}}");
+                                "First: {{CONVERSATION_STAGE}}, Second: {{CONVERSATION_STAGE}}, Third: {{CONVERSATION_STAGE}}");
                 Map<ConversationContextType, String> variables = new HashMap<>();
-                variables.put(ConversationContextType.MESSAGE, "Repeated");
+                variables.put(ConversationContextType.CONVERSATION_STAGE, "1단계");
 
                 // when
                 String result = script.render(variables);
 
                 // then
-                then(result).isEqualTo("First: Repeated, Second: Repeated, Third: Repeated");
+                then(result).isEqualTo("First: 1단계, Second: 1단계, Third: 1단계");
             }
         }
 
@@ -223,17 +181,113 @@ class ConversationScriptTest {
                 var script =
                         new ConversationScript(
                                 ConversationType.CHAT_ASSISTANT,
-                                "Message: {{MESSAGE}}, Previous: {{PREVIOUS_CONVERSATIONS}}");
+                                "Stage: {{CONVERSATION_STAGE}}, Previous: {{PREVIOUS_CONVERSATIONS}}");
                 Map<ConversationContextType, String> variables = new HashMap<>();
-                variables.put(ConversationContextType.MESSAGE, "Hello");
+                variables.put(ConversationContextType.CONVERSATION_STAGE, "1단계");
                 // PREVIOUS_CONVERSATIONS not provided
 
                 // when
                 String result = script.render(variables);
 
                 // then
-                then(result).isEqualTo("Message: Hello, Previous: ");
+                then(result).isEqualTo("Stage: 1단계, Previous: ");
             }
+        }
+
+        @Nested
+        @DisplayName("템플릿에 알려지지 않은 변수가 있을 때")
+        class Context_with_unknown_variable {
+
+            @Test
+            @DisplayName("플레이스홀더를 유지하고 에러를 로그한다")
+            void it_keeps_placeholder_visible() {
+                // given
+                String templateContent =
+                        "Hello {{UNKNOWN_VARIABLE}}, stage is {{CONVERSATION_STAGE}}";
+                ConversationScript script =
+                        new ConversationScript(ConversationType.CHAT_ASSISTANT, templateContent);
+
+                Map<ConversationContextType, String> variables =
+                        Map.of(ConversationContextType.CONVERSATION_STAGE, "1단계");
+
+                // when
+                String result = script.render(variables);
+
+                // then
+                then(result)
+                        .contains("{{UNKNOWN_VARIABLE}}") // Unknown variable preserved
+                        .contains("1단계") // Known variable replaced
+                        .doesNotContain("{{CONVERSATION_STAGE}}"); // Known variable replaced
+            }
+        }
+
+        @Nested
+        @DisplayName("변수 값이 빈 문자열일 때")
+        class Context_with_empty_variable_value {
+
+            @Test
+            @DisplayName("빈 문자열로 대체하고 경고를 로그한다")
+            void it_replaces_with_empty_string_and_warns() {
+                // given
+                String templateContent = "Stage: {{CONVERSATION_STAGE}}";
+                ConversationScript script =
+                        new ConversationScript(ConversationType.CHAT_ASSISTANT, templateContent);
+
+                Map<ConversationContextType, String> variables =
+                        Map.of(
+                                ConversationContextType.CONVERSATION_STAGE, "" // Empty value
+                                );
+
+                // when
+                String result = script.render(variables);
+
+                // then
+                then(result).isEqualTo("Stage: ");
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("validateVariables")
+    class Describe_validateVariables {
+
+        @Test
+        @DisplayName("모든 필수 변수가 제공되면 통과한다")
+        void it_passes_when_all_variables_provided() {
+            // given
+            String content = "Stage: {{CONVERSATION_STAGE}}, Previous: {{PREVIOUS_CONVERSATIONS}}";
+            ConversationScript script =
+                    new ConversationScript(ConversationType.CHAT_ASSISTANT, content);
+
+            Map<ConversationContextType, String> variables =
+                    Map.of(
+                            ConversationContextType.CONVERSATION_STAGE, "1단계",
+                            ConversationContextType.PREVIOUS_CONVERSATIONS, "이전 대화");
+
+            // when & then - should not throw exception
+            script.validateVariables(variables);
+        }
+
+        @Test
+        @DisplayName("필수 변수가 누락되면 예외를 발생시킨다")
+        void it_throws_exception_when_variables_missing() {
+            // given
+            String content = "Stage: {{CONVERSATION_STAGE}}, Previous: {{PREVIOUS_CONVERSATIONS}}";
+            ConversationScript script =
+                    new ConversationScript(ConversationType.CHAT_ASSISTANT, content);
+
+            Map<ConversationContextType, String> variables =
+                    Map.of(
+                            ConversationContextType.CONVERSATION_STAGE, "1단계"
+                            // PREVIOUS_CONVERSATIONS is missing
+                            );
+
+            // when & then
+            thenThrownBy(() -> script.validateVariables(variables))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining(
+                            "Missing required variables for template 'CHAT_ASSISTANT'")
+                    .hasMessageContaining("PREVIOUS_CONVERSATIONS");
         }
     }
 }
