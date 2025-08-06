@@ -21,6 +21,7 @@ import com.nexters.teamace.chat.application.CreateChatRoomResult;
 import com.nexters.teamace.chat.application.SendMessageCommand;
 import com.nexters.teamace.chat.application.SendMessageResult;
 import com.nexters.teamace.common.annotation.WithMockCustomUser;
+import com.nexters.teamace.common.presentation.UserInfo;
 import com.nexters.teamace.common.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,8 +36,9 @@ class ChatRoomControllerTest extends ControllerTest {
     @WithMockCustomUser
     void createChatRoom() throws Exception {
         // given
-        final ChatRoomRequest request = new ChatRoomRequest("user123");
-        final String requestBody = objectMapper.writeValueAsString(request);
+        given(authUserArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(authUserArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                .willReturn(new UserInfo(1L, "test-user", "테스트유저"));
 
         final CreateChatRoomResult chatRoom = new CreateChatRoomResult(1L, "첫번째 채팅");
         given(chatRoomService.createChat(any(ChatRoomCommand.class))).willReturn(chatRoom);
@@ -45,10 +47,7 @@ class ChatRoomControllerTest extends ControllerTest {
 
         // when
         final ResultActions resultActions =
-                mockMvc.perform(
-                        post("/api/v1/chat-rooms")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody));
+                mockMvc.perform(post("/api/v1/chat-rooms").contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions
@@ -65,10 +64,6 @@ class ChatRoomControllerTest extends ControllerTest {
                                         ResourceSnippetParameters.builder()
                                                 .tag("Chat")
                                                 .description("채팅룸 생성")
-                                                .requestFields(
-                                                        fieldWithPath("username")
-                                                                .type(JsonFieldType.STRING)
-                                                                .description("사용자 ID"))
                                                 .responseFields(
                                                         fieldWithPath("success")
                                                                 .type(JsonFieldType.BOOLEAN)
@@ -85,35 +80,33 @@ class ChatRoomControllerTest extends ControllerTest {
                                                         fieldWithPath("error")
                                                                 .type(JsonFieldType.NULL)
                                                                 .description("에러 정보 (성공 시 null)"))
-                                                .requestSchema(schema("ChatRoomRequest"))
                                                 .responseSchema(schema("ChatRoomResponse"))
                                                 .build())));
     }
 
     @Test
-    @DisplayName("username이 비어있으면 채팅 생성에 실패한다")
+    @DisplayName("사용자 조회 실패 시 채팅 생성에 실패한다")
     @WithMockCustomUser
-    void createChatRoom_usernameBlank_fail() throws Exception {
+    void createChatRoom_userNotFound_fail() throws Exception {
         // given
-        final ChatRoomRequest request = new ChatRoomRequest("");
-        final String requestBody = objectMapper.writeValueAsString(request);
+        given(authUserArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(authUserArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                .willReturn(new UserInfo(1L, "nonexistent-user", "테스트유저"));
+
+        given(userService.getUserByUsername("nonexistent-user"))
+                .willThrow(new RuntimeException("User not found"));
 
         // when
         final ResultActions resultActions =
-                mockMvc.perform(
-                        post("/api/v1/chat-rooms")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody));
+                mockMvc.perform(post("/api/v1/chat-rooms").contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.error").exists())
-                .andExpect(jsonPath("$.error.code").value("E400"))
-                .andExpect(jsonPath("$.error.data[0].field").value("username"))
-                .andExpect(jsonPath("$.error.data[0].message").value("username must not be blank"))
+                .andExpect(jsonPath("$.error.code").value("E500"))
                 .andDo(
                         MockMvcRestDocumentationWrapper.document(
                                 "{class_name}/{method_name}",
@@ -122,11 +115,7 @@ class ChatRoomControllerTest extends ControllerTest {
                                 resource(
                                         ResourceSnippetParameters.builder()
                                                 .tag("Chat")
-                                                .description("채팅룸 생성")
-                                                .requestFields(
-                                                        fieldWithPath("username")
-                                                                .type(JsonFieldType.STRING)
-                                                                .description("사용자 ID (빈 값 불가)"))
+                                                .description("채팅룸 생성 - 사용자 조회 실패")
                                                 .responseFields(
                                                         fieldWithPath("success")
                                                                 .type(JsonFieldType.BOOLEAN)
@@ -144,15 +133,8 @@ class ChatRoomControllerTest extends ControllerTest {
                                                                 .type(JsonFieldType.STRING)
                                                                 .description("에러 메시지"),
                                                         fieldWithPath("error.data")
-                                                                .type(JsonFieldType.ARRAY)
-                                                                .description("검증 실패 상세 정보"),
-                                                        fieldWithPath("error.data[].field")
-                                                                .type(JsonFieldType.STRING)
-                                                                .description("검증 실패 필드명"),
-                                                        fieldWithPath("error.data[].message")
-                                                                .type(JsonFieldType.STRING)
-                                                                .description("검증 실패 메시지"))
-                                                .requestSchema(schema("ChatRoomRequest"))
+                                                                .type(JsonFieldType.NULL)
+                                                                .description("추가 에러 데이터 (null)"))
                                                 .responseSchema(schema("ErrorResponse"))
                                                 .build())));
     }
@@ -161,15 +143,11 @@ class ChatRoomControllerTest extends ControllerTest {
     @DisplayName("인증 없이 채팅방 생성 요청 시 401 Unauthorized를 반환한다")
     void createChatRoom_withoutAuth_unauthorized() throws Exception {
         // given
-        final ChatRoomRequest request = new ChatRoomRequest("user123");
-        final String requestBody = objectMapper.writeValueAsString(request);
+        // No authentication setup
 
         // when
         final ResultActions resultActions =
-                mockMvc.perform(
-                        post("/api/v1/chat-rooms")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody));
+                mockMvc.perform(post("/api/v1/chat-rooms").contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions
@@ -188,10 +166,6 @@ class ChatRoomControllerTest extends ControllerTest {
                                         ResourceSnippetParameters.builder()
                                                 .tag("Chat")
                                                 .description("채팅룸 생성 - 인증 실패")
-                                                .requestFields(
-                                                        fieldWithPath("username")
-                                                                .type(JsonFieldType.STRING)
-                                                                .description("사용자 ID"))
                                                 .responseFields(
                                                         fieldWithPath("success")
                                                                 .type(JsonFieldType.BOOLEAN)
@@ -221,6 +195,10 @@ class ChatRoomControllerTest extends ControllerTest {
     @WithMockCustomUser
     void sendMessage() throws Exception {
         // given
+        given(authUserArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(authUserArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                .willReturn(new UserInfo(1L, "test-user", "테스트유저"));
+
         final Long chatRoomId = 1L;
         final ChatMessageRequest request = new ChatMessageRequest("Hello AI!");
         final String requestBody = objectMapper.writeValueAsString(request);
@@ -280,6 +258,10 @@ class ChatRoomControllerTest extends ControllerTest {
     @WithMockCustomUser
     void sendMessage_messageBlank_fail() throws Exception {
         // given
+        given(authUserArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(authUserArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                .willReturn(new UserInfo(1L, "test-user", "테스트유저"));
+
         final Long chatRoomId = 1L;
         final ChatMessageRequest request = new ChatMessageRequest("");
         final String requestBody = objectMapper.writeValueAsString(request);
