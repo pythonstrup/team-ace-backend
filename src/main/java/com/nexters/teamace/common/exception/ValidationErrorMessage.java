@@ -6,6 +6,9 @@ public class ValidationErrorMessage {
     public static final String REFRESH_TOKEN_NOT_BLANK = "refresh token must not be blank";
 
     /** User */
+    public static final String USER_ID_NOT_NULL = "User ID cannot be null";
+
+    public static final String USER_ID_POSITIVE = "User ID must be greater than or equal to 1";
     public static final String USERNAME_SIZE = "Username must be between 1 and 20 characters";
 
     public static final String USER_ID_NOT_NULL = "User ID cannot be null";
@@ -23,6 +26,7 @@ public class ValidationErrorMessage {
             "ChatRoom ID must be greater than or equal to 1";
     public static final String PREVIOUS_CHATS_NOT_NULL = "Previous chats cannot be null";
     public static final String CHAT_CONTEXT_NOT_NULL = "ChatContext cannot be null";
+    public static final String CHAT_ROOM_ACCESS_DENIED = "채팅방에 접근할 권한이 없습니다.";
 
     /** Letter */
     public static final String LETTER_CONTENTS_NOT_BLANK = "Letter contents must not be blank";
