@@ -6,6 +6,8 @@ import com.nexters.teamace.chat.application.CreateChatRoomResult;
 import com.nexters.teamace.chat.application.SendMessageCommand;
 import com.nexters.teamace.chat.application.SendMessageResult;
 import com.nexters.teamace.common.presentation.ApiResponse;
+import com.nexters.teamace.common.presentation.AuthUser;
+import com.nexters.teamace.common.presentation.UserInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +24,8 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
     @PostMapping
-    public ApiResponse<ChatRoomResponse> createChatRoom(
-            @RequestBody @Valid final ChatRoomRequest request) {
-        final ChatRoomCommand command = new ChatRoomCommand(request.username());
+    public ApiResponse<ChatRoomResponse> createChatRoom(@AuthUser final UserInfo user) {
+        final ChatRoomCommand command = new ChatRoomCommand(user.username());
         final CreateChatRoomResult chatRoom = chatRoomService.createChat(command);
         return ApiResponse.success(
                 new ChatRoomResponse(chatRoom.chatRoomId(), chatRoom.firstChat()));
@@ -32,9 +33,11 @@ public class ChatRoomController {
 
     @PostMapping("/{chatRoomId}/messages")
     public ApiResponse<ChatMessageResponse> sendMessage(
+            @AuthUser final UserInfo user,
             @PathVariable final Long chatRoomId,
             @RequestBody @Valid final ChatMessageRequest request) {
-        final SendMessageCommand command = new SendMessageCommand(chatRoomId, request.message());
+        final SendMessageCommand command =
+                new SendMessageCommand(user.userId(), chatRoomId, request.message());
         final SendMessageResult result = chatRoomService.sendMessage(command);
         return ApiResponse.success(new ChatMessageResponse(result.message()));
     }
