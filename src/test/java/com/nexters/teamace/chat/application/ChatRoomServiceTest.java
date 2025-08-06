@@ -2,6 +2,7 @@ package com.nexters.teamace.chat.application;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
+import static org.mockito.BDDMockito.given;
 
 import com.nexters.teamace.chat.domain.Chat;
 import com.nexters.teamace.chat.domain.ChatRoom;
@@ -42,6 +43,8 @@ class ChatRoomServiceTest extends UseCaseIntegrationTest {
             @DisplayName("랜덤한 첫 메시지와 함께 채팅방을 생성한다")
             void it_creates_chatroom_with_random_first_message() {
                 // Given
+                given(chatMessageGenerator.generateFirstMessage()).willReturn("first message");
+
                 final String username = generateUserString();
                 final String nickname = generateUserString();
                 userRepository.save(new User(username, nickname));
