@@ -1,5 +1,6 @@
 package com.nexters.teamace.common.infrastructure.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -18,9 +19,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @SQLRestriction("deleted_at IS NULL")
 public abstract class TimeEntity {
 
-    @CreatedDate private LocalDateTime createdAt;
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
-    @CreatedBy private String createdId;
+    @CreatedBy
+    @Column(updatable = false)
+    private String createdId;
 
     @LastModifiedDate private LocalDateTime updatedAt;
 
