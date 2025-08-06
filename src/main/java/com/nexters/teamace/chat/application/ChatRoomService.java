@@ -11,6 +11,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -21,7 +22,7 @@ public class ChatRoomService {
     private final ChatMessageGenerator chatMessageGenerator;
     private final UserService userService;
 
-    @Transactional
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public CreateChatRoomResult createChat(final ChatRoomCommand command) {
         final GetUserResult user = userService.getUserByUsername(command.username());
         final ChatRoom chatRoom = ChatRoom.create(user.id());
@@ -33,7 +34,7 @@ public class ChatRoomService {
         return new CreateChatRoomResult(savedChatRoom.getId(), firstMessage);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public SendMessageResult sendMessage(final SendMessageCommand command) {
         final ChatRoom chatRoom = chatRoomRepository.getById(command.chatRoomId());
         chatRoom.addUserMessage(command.message());
