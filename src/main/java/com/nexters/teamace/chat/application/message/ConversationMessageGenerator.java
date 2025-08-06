@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class ConversationMessageGenerator implements ChatMessageGenerator {
 
+    private static final int CONTEXT_EXPLORATION_THRESHOLD = 2;
+
     private final ConversationService conversationService;
 
     @Override
@@ -54,18 +56,17 @@ class ConversationMessageGenerator implements ChatMessageGenerator {
                 new ConversationContext(Long.toString(context.chatRoomId()), variables);
 
         final MessageConversation result =
-                (MessageConversation)
-                        conversationService.chat(
-                                ConversationType.CHAT_ASSISTANT.getType(),
-                                ConversationType.CHAT_ASSISTANT,
-                                conversationContext,
-                                userMessage);
+                conversationService.chat(
+                        MessageConversation.class,
+                        ConversationType.CHAT_ASSISTANT,
+                        conversationContext,
+                        userMessage);
 
         return result.message();
     }
 
     private ChatStage determineChatStage(final int conversationCount) {
-        if (conversationCount <= 2) {
+        if (conversationCount <= CONTEXT_EXPLORATION_THRESHOLD) {
             return ChatStage.CONTEXT_EXPLORATION;
         }
         return ChatStage.DESIRE_DISCOVERY;

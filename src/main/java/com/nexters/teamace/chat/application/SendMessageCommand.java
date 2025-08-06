@@ -1,3 +1,3 @@
 package com.nexters.teamace.chat.application;
 
-public record SendMessageCommand(Long uerId, Long chatRoomId, String message) {}
+public record SendMessageCommand(Long userId, Long chatRoomId, String message) {}
