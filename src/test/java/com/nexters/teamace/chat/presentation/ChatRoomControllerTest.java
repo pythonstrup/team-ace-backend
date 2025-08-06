@@ -3,6 +3,7 @@ package com.nexters.teamace.chat.presentation;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.epages.restdocs.apispec.Schema.schema;
+import static com.nexters.teamace.common.exception.CustomException.USER_NOT_FOUND;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -93,8 +94,7 @@ class ChatRoomControllerTest extends ControllerTest {
         given(authUserArgumentResolver.resolveArgument(any(), any(), any(), any()))
                 .willReturn(new UserInfo(1L, "nonexistent-user", "테스트유저"));
 
-        given(userService.getUserByUsername("nonexistent-user"))
-                .willThrow(new RuntimeException("User not found"));
+        given(chatRoomService.createChat(any(ChatRoomCommand.class))).willThrow(USER_NOT_FOUND);
 
         // when
         final ResultActions resultActions =
@@ -102,11 +102,11 @@ class ChatRoomControllerTest extends ControllerTest {
 
         // then
         resultActions
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.error").exists())
-                .andExpect(jsonPath("$.error.code").value("E500"))
+                .andExpect(jsonPath("$.error.code").value("E404"))
                 .andDo(
                         MockMvcRestDocumentationWrapper.document(
                                 "{class_name}/{method_name}",
