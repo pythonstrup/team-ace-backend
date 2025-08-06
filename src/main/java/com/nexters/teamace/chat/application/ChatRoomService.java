@@ -4,6 +4,7 @@ import com.nexters.teamace.chat.domain.ChatContext;
 import com.nexters.teamace.chat.domain.ChatMessageGenerator;
 import com.nexters.teamace.chat.domain.ChatRoom;
 import com.nexters.teamace.chat.domain.ChatRoomRepository;
+import com.nexters.teamace.common.exception.ValidationErrorMessage;
 import com.nexters.teamace.common.infrastructure.annotation.ReadOnlyTransactional;
 import com.nexters.teamace.user.application.GetUserResult;
 import com.nexters.teamace.user.application.UserService;
@@ -37,6 +38,9 @@ public class ChatRoomService {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public SendMessageResult sendMessage(final SendMessageCommand command) {
         final ChatRoom chatRoom = chatRoomRepository.getById(command.chatRoomId());
+        if (!Objects.equals(chatRoom.getUserId(), command.userId())) {
+            throw new AccessDeniedException(ValidationErrorMessage.CHAT_ROOM_ACCESS_DENIED);
+        }
         chatRoom.addUserMessage(command.message());
 
         final ChatContext chatContext = chatRoom.toChatContext();
