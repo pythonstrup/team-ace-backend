@@ -45,3 +45,7 @@ prompts/.env
 
 ## DB ##
 data/
+
+## Claude ##
+.mcp.json
+.claude
