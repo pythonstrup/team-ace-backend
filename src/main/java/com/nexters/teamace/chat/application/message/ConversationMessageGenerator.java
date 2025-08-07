@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class ConversationMessageGenerator implements ChatMessageGenerator {
 
+    private static final String FIRST_USER_MESSAGE = "질문을 진행해주세요.";
     private static final int CONTEXT_EXPLORATION_THRESHOLD = 2;
 
     private final ConversationService conversationService;
@@ -35,7 +36,10 @@ class ConversationMessageGenerator implements ChatMessageGenerator {
 
         final MessageConversation result =
                 conversationService.chat(
-                        MessageConversation.class, ConversationType.CHAT_ASSISTANT, context);
+                        MessageConversation.class,
+                        ConversationType.CHAT_ASSISTANT,
+                        context,
+                        FIRST_USER_MESSAGE);
 
         return result.message();
     }

@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ConversationService {
 
-    private static final String FIRST_USER_MESSAGE = "질문을 진행해주세요.";
-
     private final ConversationClient conversationClient;
     private final ConversationScriptService conversationScriptService;
 
@@ -21,7 +19,7 @@ public class ConversationService {
             final Class<T> type,
             final ConversationType conversationType,
             final ConversationContext context) {
-        return chat(type, conversationType, context, FIRST_USER_MESSAGE);
+        return chat(type, conversationType, context, null);
     }
 
     public <T> T chat(
